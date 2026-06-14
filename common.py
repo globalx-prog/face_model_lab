@@ -3,10 +3,13 @@ from __future__ import annotations
 import csv
 import json
 import math
+import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
+
+os.environ.setdefault("MPLCONFIGDIR", str(Path(__file__).resolve().parents[1] / "matplotlib_cache"))
 
 import cv2
 import numpy as np
