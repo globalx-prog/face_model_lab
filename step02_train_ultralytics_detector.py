@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 from pathlib import Path
+
+os.environ.setdefault("MPLCONFIGDIR", str(Path(__file__).resolve().parents[1] / "matplotlib_cache"))
 
 import cv2
 import torch
 from tqdm.auto import tqdm
-from ultralytics import YOLO
+from ultralytics import YOLO, RTDETR
 
-from common import MODEL_DIR, YOLO_DATASET_DIR, ensure_dirs, model_name, parse_wider_face_gt, vram_status, wider_paths
+from step00_common import MODEL_DIR, YOLO_DATASET_DIR, ensure_dirs, model_name, parse_wider_face_gt, vram_status, wider_paths
 
 
 def prepare_split(split: str, limit: int | None = None) -> None:
@@ -23,7 +26,7 @@ def prepare_split(split: str, limit: int | None = None) -> None:
     images_out.mkdir(parents=True, exist_ok=True)
     labels_out.mkdir(parents=True, exist_ok=True)
 
-    for rel_path, faces in tqdm(annotations, desc=f"prepare YOLO {split}"):
+    for rel_path, faces in tqdm(annotations, desc=f"prepare {split}"):
         if not faces:
             continue
         src_img = image_root / rel_path
@@ -62,18 +65,27 @@ def write_yaml() -> Path:
     return yaml_path
 
 
+def load_model(base: str, family: str):
+    if family == "rtdetr":
+        return RTDETR(base)
+    if family == "yolo":
+        return YOLO(base)
+    raise ValueError("--family must be yolo or rtdetr")
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Fine-tune YOLO face detector on WIDER FACE.")
-    parser.add_argument("--base", default="face_yolov8m.pt", help="Base model, e.g. face_yolov8m.pt or yolov8s.pt")
+    parser = argparse.ArgumentParser(description="Train YOLO or RT-DETR on WIDER FACE.")
+    parser.add_argument("--family", choices=["yolo", "rtdetr"], default="rtdetr")
+    parser.add_argument("--base", default="rtdetr-l.pt", help="Examples: face_yolov8m.pt, yolov8m.pt, rtdetr-l.pt")
     parser.add_argument("--epochs", type=int, default=1)
-    parser.add_argument("--batch", type=int, default=8)
+    parser.add_argument("--batch", type=int, default=4)
     parser.add_argument("--imgsz", type=int, default=640)
     parser.add_argument("--train-limit", type=int, default=600)
     parser.add_argument("--val-limit", type=int, default=120)
     parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--mosaic", type=float, default=0.6)
     parser.add_argument("--mixup", type=float, default=0.05)
-    parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
     ensure_dirs()
@@ -81,7 +93,7 @@ def main() -> None:
     prepare_split("val", args.val_limit)
     yaml_path = write_yaml()
 
-    run_type = Path(args.base).stem.replace("-", "").replace("_", "") + "_widerface_rocm"
+    run_type = f"{args.family}_{Path(args.base).stem}_widerface_rocm"
     run_name = model_name(run_type, args.batch, args.epochs, "run").removesuffix(".run")
     output = MODEL_DIR / model_name(run_type, args.batch, args.epochs, "pt")
 
@@ -90,28 +102,28 @@ def main() -> None:
     def vram_callback(trainer):
         batch_i = getattr(trainer, "batch_i", 0)
         if batch_i % 10 == 0:
-            print(f"YOLO VRAM batch {batch_i}: {vram_status()}")
+            print(f"{args.family.upper()} VRAM batch {batch_i}: {vram_status()}")
 
-    model = YOLO(args.base)
+    model = load_model(args.base, args.family)
     model.add_callback("on_train_batch_end", vram_callback)
-    model.train(
-        data=str(yaml_path),
-        epochs=args.epochs,
-        batch=args.batch,
-        imgsz=args.imgsz,
-        device=0 if torch.cuda.is_available() else "cpu",
-        project=str(MODEL_DIR / "yolo_runs"),
-        name=run_name,
-        exist_ok=True,
-        workers=args.workers,
-        seed=args.seed,
-        mosaic=args.mosaic,
-        mixup=args.mixup,
-        cos_lr=True,
-        patience=20,
-    )
+    train_kwargs = {
+        "data": str(yaml_path),
+        "epochs": args.epochs,
+        "batch": args.batch,
+        "imgsz": args.imgsz,
+        "device": 0 if torch.cuda.is_available() else "cpu",
+        "project": str(MODEL_DIR / f"{args.family}_runs"),
+        "name": run_name,
+        "exist_ok": True,
+        "workers": args.workers,
+        "seed": args.seed,
+        "patience": 20,
+    }
+    if args.family == "yolo":
+        train_kwargs.update({"mosaic": args.mosaic, "mixup": args.mixup, "cos_lr": True})
+    model.train(**train_kwargs)
 
-    best = MODEL_DIR / "yolo_runs" / run_name / "weights" / "best.pt"
+    best = MODEL_DIR / f"{args.family}_runs" / run_name / "weights" / "best.pt"
     if best.exists():
         shutil.copy2(best, output)
         print(f"saved {output}")

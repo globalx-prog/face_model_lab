@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from tqdm.auto import tqdm
 
-from common import ANNOTATIONS_DIR, DATASET_DIR, MODEL_DIR, ensure_dirs, model_name, rocm_device, vram_status, wider_paths
+from step00_common import ANNOTATIONS_DIR, DATASET_DIR, MODEL_DIR, ensure_dirs, model_name, rocm_device, vram_status, wider_paths
 
 
 class CocoFaceDataset(Dataset):
@@ -112,6 +112,7 @@ def main() -> None:
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--require-gpu", action="store_true", default=True)
+    parser.add_argument("--save-every", type=int, default=1, help="Save an epoch checkpoint every N epochs. Use 0 to disable.")
     args = parser.parse_args()
 
     ensure_dirs()
@@ -146,6 +147,10 @@ def main() -> None:
             pbar.set_postfix({"loss": f"{losses.item():.4f}", **vram_status(device)})
         scheduler.step()
         print(f"epoch={epoch + 1} mean_loss={total_loss / len(loader):.4f}")
+        if args.save_every and (epoch + 1) % args.save_every == 0:
+            checkpoint = MODEL_DIR / model_name("fasterrcnn_resnet50_fpn_rocm", args.batch, epoch + 1, "pth")
+            torch.save(model.state_dict(), checkpoint)
+            print(f"checkpoint saved {checkpoint}")
 
     output = MODEL_DIR / model_name("fasterrcnn_resnet50_fpn_rocm", args.batch, args.epochs, "pth")
     torch.save(model.state_dict(), output)
