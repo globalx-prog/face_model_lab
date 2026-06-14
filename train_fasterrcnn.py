@@ -1,0 +1,156 @@
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+import cv2
+import torch
+import torchvision
+from pycocotools.coco import COCO
+from torch.utils.data import DataLoader, Dataset
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+from tqdm.auto import tqdm
+
+from common import ANNOTATIONS_DIR, DATASET_DIR, MODEL_DIR, ensure_dirs, model_name, rocm_device, vram_status, wider_paths
+
+
+class CocoFaceDataset(Dataset):
+    def __init__(self, images_dir: Path, ann_file: Path):
+        self.images_dir = images_dir
+        self.coco = COCO(str(ann_file))
+        self.image_ids = list(self.coco.imgs.keys())
+
+    def __len__(self) -> int:
+        return len(self.image_ids)
+
+    def __getitem__(self, idx: int):
+        image_id = self.image_ids[idx]
+        img_info = self.coco.loadImgs(image_id)[0]
+        ann_ids = self.coco.getAnnIds(imgIds=image_id)
+        anns = self.coco.loadAnns(ann_ids)
+
+        img_path = self.images_dir / img_info["file_name"]
+        image_bgr = cv2.imread(str(img_path))
+        if image_bgr is None:
+            raise FileNotFoundError(img_path)
+        image = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
+        image = torch.from_numpy(image).permute(2, 0, 1).float() / 255.0
+
+        boxes, labels, areas, iscrowd = [], [], [], []
+        for ann in anns:
+            x, y, w, h = ann["bbox"]
+            if w <= 0 or h <= 0:
+                continue
+            boxes.append([x, y, x + w, y + h])
+            labels.append(1)
+            areas.append(w * h)
+            iscrowd.append(0)
+
+        target = {
+            "boxes": torch.tensor(boxes, dtype=torch.float32) if boxes else torch.zeros((0, 4), dtype=torch.float32),
+            "labels": torch.tensor(labels, dtype=torch.int64) if labels else torch.zeros((0,), dtype=torch.int64),
+            "area": torch.tensor(areas, dtype=torch.float32) if areas else torch.zeros((0,), dtype=torch.float32),
+            "iscrowd": torch.tensor(iscrowd, dtype=torch.int64) if iscrowd else torch.zeros((0,), dtype=torch.int64),
+            "image_id": torch.tensor([image_id]),
+        }
+        return image, target
+
+
+def collate_fn(batch):
+    return tuple(zip(*batch))
+
+
+def build_model(num_classes: int = 2):
+    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT")
+    in_features = model.roi_heads.box_predictor.cls_score.in_features
+    model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+    return model
+
+
+def convert_wider_to_coco(gt_file: Path, output_json: Path) -> None:
+    lines = gt_file.read_text(encoding="utf-8", errors="replace").splitlines()
+    data = {"images": [], "annotations": [], "categories": [{"id": 1, "name": "face"}]}
+    cursor = 0
+    image_id = 1
+    ann_id = 1
+    while cursor < len(lines):
+        rel_path = lines[cursor].strip()
+        cursor += 1
+        if not rel_path or cursor >= len(lines):
+            continue
+        face_count = int(lines[cursor].strip())
+        cursor += 1
+        data["images"].append({"id": image_id, "file_name": rel_path})
+        for _ in range(face_count):
+            parts = lines[cursor].strip().split()
+            cursor += 1
+            if len(parts) < 4:
+                continue
+            x, y, w, h = map(float, parts[:4])
+            if w <= 0 or h <= 0:
+                continue
+            data["annotations"].append({
+                "id": ann_id,
+                "image_id": image_id,
+                "category_id": 1,
+                "bbox": [x, y, w, h],
+                "area": w * h,
+                "iscrowd": 0,
+            })
+            ann_id += 1
+        image_id += 1
+    output_json.parent.mkdir(parents=True, exist_ok=True)
+    output_json.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Train Faster R-CNN face detector on WIDER FACE.")
+    parser.add_argument("--epochs", type=int, default=1)
+    parser.add_argument("--batch", type=int, default=2)
+    parser.add_argument("--reduction", type=int, default=10)
+    parser.add_argument("--lr", type=float, default=1e-4)
+    parser.add_argument("--workers", type=int, default=2)
+    parser.add_argument("--require-gpu", action="store_true", default=True)
+    args = parser.parse_args()
+
+    ensure_dirs()
+    device = rocm_device(args.require_gpu)
+    train_images, train_gt = wider_paths("train")
+    ann_file = ANNOTATIONS_DIR / "instances_train.json"
+    if not ann_file.exists():
+        convert_wider_to_coco(train_gt, ann_file)
+
+    dataset = CocoFaceDataset(train_images, ann_file)
+    if args.reduction > 1:
+        dataset = torch.utils.data.Subset(dataset, list(range(0, len(dataset), args.reduction)))
+    loader = DataLoader(dataset, batch_size=args.batch, shuffle=True, num_workers=args.workers, collate_fn=collate_fn)
+
+    model = build_model().to(device)
+    optimizer = torch.optim.SGD([p for p in model.parameters() if p.requires_grad], lr=args.lr, momentum=0.9, weight_decay=5e-4)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(args.epochs, 1))
+
+    model.train()
+    for epoch in range(args.epochs):
+        total_loss = 0.0
+        pbar = tqdm(loader, desc=f"Faster R-CNN epoch {epoch + 1}/{args.epochs}")
+        for images, targets in pbar:
+            images = [img.to(device) for img in images]
+            targets = [{k: v.to(device) for k, v in target.items()} for target in targets]
+            losses = sum(loss for loss in model(images, targets).values())
+            optimizer.zero_grad()
+            losses.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            optimizer.step()
+            total_loss += losses.item()
+            pbar.set_postfix({"loss": f"{losses.item():.4f}", **vram_status(device)})
+        scheduler.step()
+        print(f"epoch={epoch + 1} mean_loss={total_loss / len(loader):.4f}")
+
+    output = MODEL_DIR / model_name("fasterrcnn_resnet50_fpn_rocm", args.batch, args.epochs, "pth")
+    torch.save(model.state_dict(), output)
+    print(f"saved {output}")
+
+
+if __name__ == "__main__":
+    main()

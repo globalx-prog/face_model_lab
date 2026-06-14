@@ -1,0 +1,14 @@
+__pycache__/
+.ipynb_checkpoints/
+*.py[cod]
+*.egg-info/
+
+# Runtime outputs and large artifacts should stay outside git.
+model_results/
+runs/
+*.pt
+*.pth
+*.onnx
+*.mp4
+*.avi
+*.mov
