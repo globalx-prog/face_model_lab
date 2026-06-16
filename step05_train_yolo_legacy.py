@@ -1,15 +1,59 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 from pathlib import Path
+
+os.environ.setdefault("MPLCONFIGDIR", str(Path(__file__).resolve().parents[1] / "matplotlib_cache"))
 
 import cv2
 import torch
 from tqdm.auto import tqdm
 from ultralytics import YOLO
 
-from step00_common import MODEL_DIR, YOLO_DATASET_DIR, ensure_dirs, model_name, parse_wider_face_gt, vram_status, wider_paths
+from step00_common import MODEL_DIR, ROOT, YOLO_DATASET_DIR, ensure_dirs, model_name, parse_wider_face_gt, vram_status, wider_paths
+
+
+KNOWN_ULTRALYTICS_STEMS = {
+    "yolov8n.pt",
+    "yolov8s.pt",
+    "yolov8m.pt",
+    "yolov8l.pt",
+    "yolov8x.pt",
+    "yolo11n.pt",
+    "yolo11s.pt",
+    "yolo11m.pt",
+    "yolo11l.pt",
+    "yolo11x.pt",
+}
+
+
+def resolve_base_model(base: str) -> str:
+    candidate = Path(base).expanduser()
+    search_paths = [
+        candidate,
+        ROOT / candidate,
+        MODEL_DIR / candidate,
+    ]
+    for path in search_paths:
+        if path.exists():
+            return str(path)
+
+    if candidate.name in KNOWN_ULTRALYTICS_STEMS:
+        print(f"Base model {base} not found locally; Ultralytics may download it if network is available.")
+        return base
+
+    checked = "\n".join(f"  - {path}" for path in search_paths)
+    raise FileNotFoundError(
+        f"Base model '{base}' was not found.\n"
+        f"Checked:\n{checked}\n\n"
+        "Options:\n"
+        "  1. Put your face model at /home/clemi/projekte/MIM/face_yolov8m.pt\n"
+        "  2. Pass an existing absolute path via --base /path/to/model.pt\n"
+        "  3. Use an official Ultralytics base, e.g. --base yolov8n.pt or --base yolov8m.pt "
+        "(requires network on first run and is not face-pretrained)."
+    )
 
 
 def prepare_split(split: str, limit: int | None = None) -> None:
@@ -81,6 +125,7 @@ def main() -> None:
     prepare_split("val", args.val_limit)
     yaml_path = write_yaml()
 
+    base_model = resolve_base_model(args.base)
     run_type = Path(args.base).stem.replace("-", "").replace("_", "") + "_widerface_rocm"
     run_name = model_name(run_type, args.batch, args.epochs, "run").removesuffix(".run")
     output = MODEL_DIR / model_name(run_type, args.batch, args.epochs, "pt")
@@ -92,7 +137,7 @@ def main() -> None:
         if batch_i % 10 == 0:
             print(f"YOLO VRAM batch {batch_i}: {vram_status()}")
 
-    model = YOLO(args.base)
+    model = YOLO(base_model)
     model.add_callback("on_train_batch_end", vram_callback)
     model.train(
         data=str(yaml_path),

@@ -4,6 +4,7 @@ import csv
 import json
 import math
 import os
+import statistics
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -110,6 +111,30 @@ def wider_paths(split: str) -> tuple[Path, Path]:
     else:
         raise ValueError(f"Unknown split: {split}")
     return image_dir, gt_file
+
+
+def dataset_summary(split: str) -> dict[str, float | int | str]:
+    image_dir, gt_file = wider_paths(split)
+    annotations = parse_wider_face_gt(gt_file)
+    face_counts = [len(faces) for faces in annotations.values()]
+    non_empty = [count for count in face_counts if count > 0]
+    return {
+        "split": split,
+        "image_dir": str(image_dir),
+        "gt_file": str(gt_file),
+        "images": len(face_counts),
+        "images_with_faces": len(non_empty),
+        "images_without_faces": len(face_counts) - len(non_empty),
+        "faces": sum(face_counts),
+        "faces_per_image_mean": statistics.fmean(face_counts) if face_counts else 0.0,
+        "faces_per_face_image_mean": statistics.fmean(non_empty) if non_empty else 0.0,
+        "faces_per_image_median": statistics.median(face_counts) if face_counts else 0.0,
+        "faces_per_image_max": max(face_counts) if face_counts else 0,
+    }
+
+
+def compare_train_val() -> list[dict[str, float | int | str]]:
+    return [dataset_summary("train"), dataset_summary("val")]
 
 
 def xywh_to_xyxy(face: dict[str, list[float]]) -> list[float]:

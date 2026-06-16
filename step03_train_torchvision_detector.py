@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import csv
 
 import torch
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
-from step00_common import ANNOTATIONS_DIR, MODEL_DIR, ensure_dirs, model_name, rocm_device, vram_status, wider_paths
+from step00_common import ANNOTATIONS_DIR, MODEL_DIR, RESULTS_DIR, ensure_dirs, model_name, rocm_device, timestamp, vram_status, wider_paths
 from step06_evaluate_models import build_fcos, build_fasterrcnn, build_retinanet
 from step04_train_fasterrcnn import CocoFaceDataset, collate_fn, convert_wider_to_coco
 
@@ -19,6 +20,14 @@ def build_model(kind: str):
     if kind == "fcos":
         return build_fcos()
     raise ValueError("--kind must be fasterrcnn, retinanet, or fcos")
+
+
+def write_history(path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["model", "epoch", "mean_loss", "lr", "batch", "reduction", "images", "checkpoint"])
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def main() -> None:
@@ -43,12 +52,15 @@ def main() -> None:
     if args.reduction > 1:
         dataset = torch.utils.data.Subset(dataset, list(range(0, len(dataset), args.reduction)))
     loader = DataLoader(dataset, batch_size=args.batch, shuffle=True, num_workers=args.workers, collate_fn=collate_fn)
+    image_count = len(dataset)
 
     model = build_model(args.kind).to(device)
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=args.lr, weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(args.epochs, 1))
 
     model.train()
+    history = []
+    history_path = RESULTS_DIR / f"training_history_{args.kind}_resnet50_fpn_rocm_bs{args.batch}_ep{args.epochs}_{timestamp()}.csv"
     for epoch in range(args.epochs):
         total_loss = 0.0
         pbar = tqdm(loader, desc=f"{args.kind} epoch {epoch + 1}/{args.epochs}")
@@ -64,11 +76,26 @@ def main() -> None:
             total_loss += losses.item()
             pbar.set_postfix({"loss": f"{losses.item():.4f}", **vram_status(device)})
         scheduler.step()
-        print(f"epoch={epoch + 1} mean_loss={total_loss / len(loader):.4f}")
+        mean_loss = total_loss / len(loader)
+        checkpoint = ""
+        print(f"epoch={epoch + 1} mean_loss={mean_loss:.4f}")
         if args.save_every and (epoch + 1) % args.save_every == 0:
-            checkpoint = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, epoch + 1, "pth")
-            torch.save(model.state_dict(), checkpoint)
-            print(f"checkpoint saved {checkpoint}")
+            checkpoint_path = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, epoch + 1, "pth")
+            torch.save(model.state_dict(), checkpoint_path)
+            checkpoint = str(checkpoint_path)
+            print(f"checkpoint saved {checkpoint_path}")
+        history.append({
+            "model": f"{args.kind}_resnet50_fpn_rocm",
+            "epoch": epoch + 1,
+            "mean_loss": mean_loss,
+            "lr": optimizer.param_groups[0]["lr"],
+            "batch": args.batch,
+            "reduction": args.reduction,
+            "images": image_count,
+            "checkpoint": checkpoint,
+        })
+        write_history(history_path, history)
+        print(f"history updated {history_path}")
 
     output = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, args.epochs, "pth")
     torch.save(model.state_dict(), output)

@@ -29,6 +29,7 @@ Do not optimize only for recall. For video blurring, a few false positives may b
 - ms/image
 - VRAM
 - false positives by visual spot-check
+- Train-vs-validation distribution: image count, face count, mean faces/image, max faces/image
 
 ## Commands
 
@@ -96,9 +97,26 @@ loss=..., alloc=..., res=..., free=..., total=...
 
 The same progress output appears in VS Code/Jupyter cell output and in the CLI.
 
+
+
+## Train-vs-Val Comparison
+
+Every evaluation now prints and stores a train-vs-validation comparison. The training notebook also plots it before model training:
+
+```text
+train: images, faces, mean_faces/image, max_faces/image
+val:   images, faces, mean_faces/image, max_faces/image
+```
+
+This matters because WIDER FACE validation can be much harder than a tiny training subset. If validation has more crowded images or more small faces, loss can look better while recall stays weak.
+
+
+
 ## Batch Size Notes
 
 A larger batch can be slower per epoch on ROCm for detection models because images have different sizes and many boxes, so each batch may trigger more padding, CPU collation, GPU memory traffic, and larger FPN/RPN/ROI workloads. If VRAM pressure increases, PyTorch may reserve more memory and kernels can become less efficient. For this project `batch=2` is a good stable default; improve throughput first with more images/epochs, then test `batch=4` only if thermals and VRAM stay healthy.
+
+
 
 ## Faster R-CNN Parameters
 
@@ -110,13 +128,7 @@ Current defaults are conservative:
 - `clip_grad_norm_=1.0`: useful against unstable detection batches.
 - `batch=2`: good ROCm default for WIDER FACE and your GPU thermals.
 
-For a stronger Faster R-CNN run, try:
 
-```bash
-python face_model_lab/step04_train_fasterrcnn.py --epochs 15 --batch 2 --reduction 1 --lr 0.0001 --save-every 1
-```
-
-For experiments, change one thing at a time: `lr=5e-5`, `lr=2e-4`, then compare recall and ms/image.
 
 Train Faster R-CNN:
 
@@ -126,11 +138,51 @@ source /home/clemi/.venvs/MIM/bin/activate
 python face_model_lab/step04_train_fasterrcnn.py --epochs 1 --batch 2 --reduction 2000 --save-every 1
 ```
 
-Train YOLO:
+For a stronger Faster R-CNN run, try:
+
+```bash
+python face_model_lab/step04_train_fasterrcnn.py --epochs 15 --batch 2 --reduction 1 --lr 0.0001 --save-every 1
+```
+
+
+For experiments, change one thing at a time: `lr=5e-5`, `lr=2e-4`, then compare recall and ms/image.
+
+
+
+
+Train YOLO: 
 
 ```bash
 python face_model_lab/step05_train_yolo_legacy.py --base face_yolov8m.pt --epochs 1 --batch 2 --imgsz 640 --train-limit 20 --val-limit 8
 ```
+
+Wenn du erstmal mit einem offiziellen YOLO-Modell starten willst: Das lädt beim ersten Mal Gewichte aus dem Netz. yolov8n.pt ist kleiner/schneller; yolov8m.pt ist stärker, aber schwerer.
+
+/home/clemi/.venvs/MIM/bin/python step05_train_yolo_legacy.py \
+  --base yolov8n.pt \
+  --epochs 10 --batch 2 --imgsz 640 \
+  --train-limit 20 --val-limit 8
+
+Aussagekräftiger:
+/home/clemi/.venvs/MIM/bin/python step05_train_yolo_legacy.py \
+  --base yolov8m.pt \
+  --epochs 15 --batch 2 --imgsz 768 \
+  --train-limit 5000 --val-limit 1000
+
+Und wirklich ernsthaft:
+/home/clemi/.venvs/MIM/bin/python step05_train_yolo_legacy.py \
+  --base yolov8m.pt \
+  --epochs 30 --batch 2 --imgsz 768 \
+  --train-limit 0 --val-limit 0
+
+  Wenn der Loss fällt, heißt das nur: Das Modell kann diese Mini-Stichprobe lernen. Für echte Bewertung danach unbedingt mit größerem, festen Validation-Set evaluieren, z.B.:
+/home/clemi/.venvs/MIM/bin/python step06_evaluate_models.py \
+  --models ../trained_models/yolo_yolov8m_widerface_rocm_bs2_ep10.pt \
+  --limit 500 \
+  --score-thresholds 0.25 0.5 0.7
+
+
+/home/clemi/.venvs/MIM/bin/python
 
 Train YOLO or RT-DETR with the shared Ultralytics trainer:
 
@@ -152,8 +204,28 @@ Evaluate models:
 ```bash
 python face_model_lab/step06_evaluate_models.py \
   --models trained_models/fasterrcnn_resnet50_fpn_rocm_bs2_ep1.pth face_yolov8m.pt trained_models/rtdetr_rtdetrl_widerface_rocm_bs4_ep1.pt \
-  --limit 100
+  --limit 100 \
+  --score-thresholds 0.25 0.5 0.7
 ```
+
+If no local trained model exists yet, evaluation can run without `--models`:
+
+```bash
+python face_model_lab/step06_evaluate_models.py --limit 20
+```
+
+In that case the script prints a clear warning and uses a COCO-pretrained Faster R-CNN only as a pipeline/speed baseline. It is not face-finetuned, so its recall is not a fair face-detector quality result.
+
+Optional external baselines from `Zusammenfassung.ipynb`:
+
+```bash
+python face_model_lab/step06_evaluate_models.py \
+  --limit 50 \
+  --include-insightface \
+  --include-mtcnn
+```
+
+`--score-thresholds` creates precision/recall sweep data for Torchvision `.pth` models. The notebook plots this as Precision/Recall vs. score threshold.
 
 Blur a video:
 
@@ -162,8 +234,26 @@ python face_model_lab/step08_blur_video.py \
   --model face_yolov8m.pt \
   --input Videos/Feuerwehr_progressiv.mp4 \
   --output Videos/Feuerwehr_lab_blur.mp4 \
-  --max-frames 200
+  --max-frames 200 \
+  --deinterlace smoke \
+  --frame-skip 2 \
+  --conf 0.25 \
+  --background-threshold-percent 0.0 \
+  --padding-factor 0.5 \
+  --blur-kernel 99 \
+  --mask-kernel 71
 ```
+
+Video options carried over from `Zusammenfassung.ipynb`:
+
+- `--deinterlace smoke|auto|always|never`
+- `--frame-skip`
+- `--max-frames`
+- `--conf`
+- `--background-threshold-percent`
+- `--padding-factor`
+- `--blur-kernel`
+- `--mask-kernel`
 
 ## Model Naming
 

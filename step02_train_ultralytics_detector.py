@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import os
 import shutil
+import time
 from pathlib import Path
 
 os.environ.setdefault("MPLCONFIGDIR", str(Path(__file__).resolve().parents[1] / "matplotlib_cache"))
@@ -12,7 +13,50 @@ import torch
 from tqdm.auto import tqdm
 from ultralytics import YOLO, RTDETR
 
-from step00_common import MODEL_DIR, YOLO_DATASET_DIR, ensure_dirs, model_name, parse_wider_face_gt, vram_status, wider_paths
+from step00_common import MODEL_DIR, ROOT, YOLO_DATASET_DIR, ensure_dirs, model_name, parse_wider_face_gt, vram_status, wider_paths
+
+
+KNOWN_ULTRALYTICS_STEMS = {
+    "yolov8n.pt",
+    "yolov8s.pt",
+    "yolov8m.pt",
+    "yolov8l.pt",
+    "yolov8x.pt",
+    "yolo11n.pt",
+    "yolo11s.pt",
+    "yolo11m.pt",
+    "yolo11l.pt",
+    "yolo11x.pt",
+    "rtdetr-l.pt",
+    "rtdetr-x.pt",
+}
+
+
+def resolve_base_model(base: str) -> str:
+    candidate = Path(base).expanduser()
+    search_paths = [
+        candidate,
+        ROOT / candidate,
+        MODEL_DIR / candidate,
+    ]
+    for path in search_paths:
+        if path.exists():
+            return str(path)
+
+    if candidate.name in KNOWN_ULTRALYTICS_STEMS:
+        print(f"Base model {base} not found locally; Ultralytics may download it if network is available.")
+        return base
+
+    checked = "\n".join(f"  - {path}" for path in search_paths)
+    raise FileNotFoundError(
+        f"Base model '{base}' was not found.\n"
+        f"Checked:\n{checked}\n\n"
+        "Options:\n"
+        "  1. Put your model at /home/clemi/projekte/MIM/<model>.pt\n"
+        "  2. Pass an existing absolute path via --base /path/to/model.pt\n"
+        "  3. Use an official Ultralytics base, e.g. --base yolov8n.pt, yolov8m.pt, or rtdetr-l.pt "
+        "(requires network on first run and may not be face-pretrained)."
+    )
 
 
 def prepare_split(split: str, limit: int | None = None) -> None:
@@ -86,6 +130,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--mosaic", type=float, default=0.6)
     parser.add_argument("--mixup", type=float, default=0.05)
+    parser.add_argument("--vram-log-seconds", type=float, default=30.0, help="Minimum seconds between VRAM live log lines.")
     args = parser.parse_args()
 
     ensure_dirs()
@@ -93,18 +138,25 @@ def main() -> None:
     prepare_split("val", args.val_limit)
     yaml_path = write_yaml()
 
+    base_model = resolve_base_model(args.base)
     run_type = f"{args.family}_{Path(args.base).stem}_widerface_rocm"
     run_name = model_name(run_type, args.batch, args.epochs, "run").removesuffix(".run")
     output = MODEL_DIR / model_name(run_type, args.batch, args.epochs, "pt")
 
     print("VRAM before training:", vram_status())
 
-    def vram_callback(trainer):
-        batch_i = getattr(trainer, "batch_i", 0)
-        if batch_i % 10 == 0:
-            print(f"{args.family.upper()} VRAM batch {batch_i}: {vram_status()}")
+    last_vram_log = 0.0
 
-    model = load_model(args.base, args.family)
+    def vram_callback(trainer):
+        nonlocal last_vram_log
+        now = time.monotonic()
+        if now - last_vram_log >= args.vram_log_seconds:
+            epoch = int(getattr(trainer, "epoch", -1)) + 1
+            batch_i = getattr(trainer, "batch_i", "?")
+            print(f"{args.family.upper()} VRAM epoch {epoch}/{args.epochs} batch {batch_i}: {vram_status()}")
+            last_vram_log = now
+
+    model = load_model(base_model, args.family)
     model.add_callback("on_train_batch_end", vram_callback)
     train_kwargs = {
         "data": str(yaml_path),
