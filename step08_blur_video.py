@@ -1,3 +1,10 @@
+# Blurrt Gesichter in Videos mit einem YOLO/RT-DETR-.pt oder Torchvision-.pth Modell.
+# Wichtige Parameter: --model, --model-kind auto|fasterrcnn|retinanet|fcos,
+# --input, --output, --conf, --imgsz, --frame-skip, --max-frames,
+# --deinterlace, --blur-mode oval|box|pixelate.
+# Beispiel:
+#   python face_model_lab/step08_blur_video.py --model trained_models/yolo_yolov8m_widerface_rocm_bs2_ep15.pt --input Videos/Feuerwehr_progressiv.mp4 --output Videos/lab_outputs/Feuerwehr_blur.mp4 --conf 0.25 --max-frames 300
+
 from __future__ import annotations
 
 import argparse
@@ -12,6 +19,10 @@ os.environ.setdefault("MPLCONFIGDIR", str(Path(__file__).resolve().parents[1] / 
 import cv2
 import numpy as np
 import torch
+import torchvision
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+from torchvision.models.detection.fcos import FCOSClassificationHead
+from torchvision.models.detection.retinanet import RetinaNetClassificationHead
 from tqdm.auto import tqdm
 from ultralytics import YOLO
 
@@ -168,9 +179,105 @@ def pixelate(frame, box, padding_factor: float = 0.35, pixel_size: int = 18):
     return frame
 
 
+def infer_model_kind(model_path: Path) -> str:
+    name = model_path.stem.lower()
+    if "retinanet" in name:
+        return "retinanet"
+    if "fcos" in name:
+        return "fcos"
+    if "fasterrcnn" in name or "faster_rcnn" in name:
+        return "fasterrcnn"
+    return "fasterrcnn"
+
+
+def build_fasterrcnn(num_classes: int = 2):
+    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=None, weights_backbone=None)
+    in_features = model.roi_heads.box_predictor.cls_score.in_features
+    model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+    return model
+
+
+def build_retinanet(num_classes: int = 2):
+    model = torchvision.models.detection.retinanet_resnet50_fpn(weights=None, weights_backbone=None)
+    old_head = model.head.classification_head
+    model.head.classification_head = RetinaNetClassificationHead(
+        old_head.cls_logits.in_channels,
+        old_head.num_anchors,
+        num_classes,
+    )
+    return model
+
+
+def build_fcos(num_classes: int = 2):
+    model = torchvision.models.detection.fcos_resnet50_fpn(weights=None, weights_backbone=None)
+    old_head = model.head.classification_head
+    model.head.classification_head = FCOSClassificationHead(
+        old_head.cls_logits.in_channels,
+        old_head.num_anchors,
+        num_classes,
+    )
+    return model
+
+
+def build_torchvision_model(kind: str):
+    if kind == "fasterrcnn":
+        return build_fasterrcnn()
+    if kind == "retinanet":
+        return build_retinanet()
+    if kind == "fcos":
+        return build_fcos()
+    raise ValueError(f"Unsupported torchvision model kind: {kind}")
+
+
+def frame_to_tensor(frame, device: torch.device):
+    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    tensor = torch.from_numpy(rgb).permute(2, 0, 1).float() / 255.0
+    return tensor.to(device)
+
+
+def load_detector(model_path: Path, model_kind: str, conf: float, imgsz: int):
+    if model_path.suffix == ".pt":
+        model = YOLO(str(model_path))
+        device = 0 if torch.cuda.is_available() else "cpu"
+
+        def detect(frame):
+            result = model.track(
+                frame,
+                persist=True,
+                tracker="bytetrack.yaml",
+                verbose=False,
+                conf=conf,
+                imgsz=imgsz,
+                device=device,
+            )[0]
+            return result.boxes.xyxy.cpu().numpy() if result.boxes is not None else []
+
+        return detect
+
+    if model_path.suffix == ".pth":
+        kind = infer_model_kind(model_path) if model_kind == "auto" else model_kind
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = build_torchvision_model(kind).to(device)
+        model.load_state_dict(torch.load(model_path, map_location=device, weights_only=True))
+        model.eval()
+        print(f"loaded Torchvision {kind} model on {device}")
+
+        def detect(frame):
+            with torch.inference_mode():
+                prediction = model([frame_to_tensor(frame, device)])[0]
+            scores = prediction["scores"].detach().cpu().numpy()
+            boxes = prediction["boxes"].detach().cpu().numpy()
+            return boxes[scores >= conf]
+
+        return detect
+
+    raise ValueError("--model must be a .pt Ultralytics model or a .pth Torchvision model")
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Blur faces in a video using a YOLO face model.")
-    parser.add_argument("--model", required=True, help="YOLO .pt model path")
+    parser = argparse.ArgumentParser(description="Blur faces in a video using a YOLO .pt or Torchvision .pth face model.")
+    parser.add_argument("--model", required=True, help="YOLO .pt or Torchvision .pth model path")
+    parser.add_argument("--model-kind", choices=["auto", "fasterrcnn", "retinanet", "fcos"], default="auto", help="Torchvision architecture for .pth models; inferred from filename by default.")
     parser.add_argument("--input", required=True, help="Input video")
     parser.add_argument("--output", default=None, help="Output video")
     parser.add_argument("--conf", type=float, default=0.35)
@@ -189,8 +296,7 @@ def main() -> None:
     input_path = Path(args.input)
     input_path = prepare_video(input_path, args.deinterlace)
     output_path = Path(args.output) if args.output else input_path.with_name(input_path.stem + "_blurred.mp4")
-    model = YOLO(args.model)
-    device = 0 if torch.cuda.is_available() else "cpu"
+    detector = load_detector(Path(args.model), args.model_kind, args.conf, args.imgsz)
 
     cap = cv2.VideoCapture(str(input_path))
     if not cap.isOpened():
@@ -213,16 +319,7 @@ def main() -> None:
         if not ok:
             break
         if frame_idx % args.frame_skip == 0:
-            result = model.track(
-                frame,
-                persist=True,
-                tracker="bytetrack.yaml",
-                verbose=False,
-                conf=args.conf,
-                imgsz=args.imgsz,
-                device=device,
-            )[0]
-            cached_boxes = result.boxes.xyxy.cpu().numpy() if result.boxes is not None else []
+            cached_boxes = detector(frame)
         for box in cached_boxes:
             x1, y1, x2, y2 = map(float, box)
             box_area = max(0.0, x2 - x1) * max(0.0, y2 - y1)

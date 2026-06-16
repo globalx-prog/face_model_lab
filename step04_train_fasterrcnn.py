@@ -1,3 +1,9 @@
+# Trainiert Faster R-CNN auf WIDER FACE.
+# Wichtige Parameter: --epochs, --batch, --reduction, --lr, --workers,
+# --save-every. Speichert .pth-Checkpoints in trained_models/.
+# Beispiel:
+#   python face_model_lab/step04_train_fasterrcnn.py --epochs 10 --batch 2 --reduction 1 --lr 0.0001 --save-every 1
+
 from __future__ import annotations
 
 import argparse

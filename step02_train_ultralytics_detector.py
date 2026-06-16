@@ -1,3 +1,9 @@
+# Trainiert YOLO- oder RT-DETR-Modelle auf WIDER FACE.
+# Wichtige Parameter: --family yolo|rtdetr, --base <modell.pt>, --epochs,
+# --batch, --imgsz, --train-limit, --val-limit, --workers, --mosaic, --mixup.
+# Beispiel:
+#   python face_model_lab/step02_train_ultralytics_detector.py --family yolo --base yolov8m.pt --epochs 15 --batch 2 --imgsz 640
+
 from __future__ import annotations
 
 import argparse

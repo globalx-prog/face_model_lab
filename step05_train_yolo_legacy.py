@@ -1,3 +1,9 @@
+# Legacy-Training fuer YOLO auf WIDER FACE.
+# Wichtige Parameter: --base <modell.pt>, --epochs, --batch, --imgsz,
+# --train-limit, --val-limit, --workers, --mosaic, --mixup, --seed.
+# Beispiel:
+#   python face_model_lab/step05_train_yolo_legacy.py --base face_yolov8m.pt --epochs 10 --batch 2 --imgsz 640
+
 from __future__ import annotations
 
 import argparse

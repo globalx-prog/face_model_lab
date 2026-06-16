@@ -1,3 +1,8 @@
+# Gemeinsame Hilfsfunktionen fuer das Face Model Lab.
+# Nicht direkt ausfuehren; diese Datei wird von den Step-Skripten importiert.
+# Setzbare zentrale Pfade unten: DATASET_DIR, ANNOTATIONS_DIR, MODEL_DIR,
+# RESULTS_DIR, YOLO_DATASET_DIR.
+
 from __future__ import annotations
 
 import csv

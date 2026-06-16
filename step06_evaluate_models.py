@@ -1,3 +1,9 @@
+# Evaluiert trainierte Face-Detektoren auf WIDER FACE Val-Samples.
+# Wichtige Parameter: --models <.pt/.pth ...>, --limit, --iou, --conf,
+# --imgsz, --score-thresholds, --include-pretrained-coco.
+# Beispiel:
+#   python face_model_lab/step06_evaluate_models.py --models trained_models/fasterrcnn_resnet50_fpn_rocm_bs2_ep10.pth trained_models/yolo_yolov8m_widerface_rocm_bs2_ep15.pt --limit 100 --conf 0.25
+
 from __future__ import annotations
 
 import argparse

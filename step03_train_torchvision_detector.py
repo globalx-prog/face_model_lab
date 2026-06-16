@@ -1,3 +1,9 @@
+# Trainiert Torchvision-Detektoren auf WIDER FACE.
+# Wichtige Parameter: --kind fasterrcnn|retinanet|fcos, --epochs, --batch,
+# --reduction, --lr, --workers, --save-every.
+# Beispiel:
+#   python face_model_lab/step03_train_torchvision_detector.py --kind retinanet --epochs 10 --batch 2 --reduction 1 --save-every 1
+
 from __future__ import annotations
 
 import argparse
