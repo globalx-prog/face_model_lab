@@ -1,6 +1,7 @@
 # Trainiert Torchvision-Detektoren auf WIDER FACE.
 # Wichtige Parameter: --kind fasterrcnn|retinanet|fcos, --epochs, --batch,
 # --reduction, --lr, --workers, --save-every.
+# Speichert als <modelltyp>_bs<batch>_red<reduction>_ep<epochs>.pth.
 # Beispiel:
 #   python face_model_lab/step03_train_torchvision_detector.py --kind retinanet --epochs 10 --batch 2 --reduction 1 --save-every 1
 
@@ -66,7 +67,7 @@ def main() -> None:
 
     model.train()
     history = []
-    history_path = RESULTS_DIR / f"training_history_{args.kind}_resnet50_fpn_rocm_bs{args.batch}_ep{args.epochs}_{timestamp()}.csv"
+    history_path = RESULTS_DIR / f"training_history_{args.kind}_resnet50_fpn_rocm_bs{args.batch}_red{args.reduction}_ep{args.epochs}_{timestamp()}.csv"
     for epoch in range(args.epochs):
         total_loss = 0.0
         pbar = tqdm(loader, desc=f"{args.kind} epoch {epoch + 1}/{args.epochs}")
@@ -86,7 +87,7 @@ def main() -> None:
         checkpoint = ""
         print(f"epoch={epoch + 1} mean_loss={mean_loss:.4f}")
         if args.save_every and (epoch + 1) % args.save_every == 0:
-            checkpoint_path = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, epoch + 1, "pth")
+            checkpoint_path = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, epoch + 1, "pth", args.reduction)
             torch.save(model.state_dict(), checkpoint_path)
             checkpoint = str(checkpoint_path)
             print(f"checkpoint saved {checkpoint_path}")
@@ -103,7 +104,7 @@ def main() -> None:
         write_history(history_path, history)
         print(f"history updated {history_path}")
 
-    output = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, args.epochs, "pth")
+    output = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, args.epochs, "pth", args.reduction)
     torch.save(model.state_dict(), output)
     print(f"saved {output}")
 

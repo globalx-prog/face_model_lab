@@ -3,7 +3,7 @@
 # --input, --output, --conf, --imgsz, --frame-skip, --max-frames,
 # --deinterlace, --blur-mode oval|box|pixelate.
 # Beispiel:
-#   python face_model_lab/step08_blur_video.py --model trained_models/yolo_yolov8m_widerface_rocm_bs2_ep15.pt --input Videos/Feuerwehr_progressiv.mp4 --output Videos/lab_outputs/Feuerwehr_blur.mp4 --conf 0.25 --max-frames 300
+#   python face_model_lab/step08_blur_video.py --model trained_models/yolo_yolov8m_widerface_rocm_bs2_red1_ep15.pt --input Videos/Feuerwehr_progressiv.mp4 --output Videos/lab_outputs/Feuerwehr_blur.mp4 --conf 0.25 --max-frames 300
 
 from __future__ import annotations
 

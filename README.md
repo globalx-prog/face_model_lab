@@ -177,7 +177,7 @@ Und wirklich ernsthaft:
 
   Wenn der Loss fällt, heißt das nur: Das Modell kann diese Mini-Stichprobe lernen. Für echte Bewertung danach unbedingt mit größerem, festen Validation-Set evaluieren, z.B.:
 /home/clemi/.venvs/MIM/bin/python step06_evaluate_models.py \
-  --models ../trained_models/yolo_yolov8m_widerface_rocm_bs2_ep10.pt \
+  --models ../trained_models/yolo_yolov8m_widerface_rocm_bs2_red1_ep10.pt \
   --limit 500 \
   --score-thresholds 0.25 0.5 0.7
 
@@ -203,7 +203,7 @@ Evaluate models:
 
 ```bash
 python face_model_lab/step06_evaluate_models.py \
-  --models trained_models/fasterrcnn_resnet50_fpn_rocm_bs2_ep1.pth face_yolov8m.pt trained_models/rtdetr_rtdetrl_widerface_rocm_bs4_ep1.pt \
+  --models trained_models/fasterrcnn_resnet50_fpn_rocm_bs2_red2000_ep1.pth face_yolov8m.pt trained_models/rtdetr_rtdetrl_widerface_rocm_bs4_ep1.pt \
   --limit 100 \
   --score-thresholds 0.25 0.5 0.7
 ```
@@ -260,15 +260,15 @@ Video options carried over from `Zusammenfassung.ipynb`:
 Saved models use:
 
 ```text
-<model_type>_bs<batch_size>_ep<epochs>.<suffix>
+<model_type>_bs<batch_size>_red<reduction>_ep<epochs>.<suffix>
 ```
 
 Examples:
 
 ```text
-fasterrcnn_resnet50_fpn_rocm_bs2_ep1.pth
+fasterrcnn_resnet50_fpn_rocm_bs2_red2000_ep1.pth
 face_yolov8m_widerface_rocm_bs8_ep1.pt
 rtdetr_rtdetrl_widerface_rocm_bs4_ep1.pt
-retinanet_resnet50_fpn_rocm_bs2_ep1.pth
+retinanet_resnet50_fpn_rocm_bs2_red2000_ep1.pth
 fcos_resnet50_fpn_rocm_bs2_ep1.pth
 ```

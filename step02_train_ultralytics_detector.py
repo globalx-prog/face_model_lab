@@ -1,8 +1,9 @@
 # Trainiert YOLO- oder RT-DETR-Modelle auf WIDER FACE.
 # Wichtige Parameter: --family yolo|rtdetr, --base <modell.pt>, --epochs,
-# --batch, --imgsz, --train-limit, --val-limit, --workers, --mosaic, --mixup.
+# --batch, --imgsz, --reduction, --train-limit, --val-limit, --workers,
+# --mosaic, --mixup.
 # Beispiel:
-#   python face_model_lab/step02_train_ultralytics_detector.py --family yolo --base yolov8m.pt --epochs 15 --batch 2 --imgsz 640
+#   python face_model_lab/step02_train_ultralytics_detector.py --family yolo --base yolov8m.pt --epochs 15 --batch 2 --reduction 1 --imgsz 640
 
 from __future__ import annotations
 
@@ -65,9 +66,11 @@ def resolve_base_model(base: str) -> str:
     )
 
 
-def prepare_split(split: str, limit: int | None = None) -> None:
+def prepare_split(split: str, limit: int | None = None, reduction: int = 1) -> None:
     image_root, gt_file = wider_paths(split)
     annotations = list(parse_wider_face_gt(gt_file).items())
+    if reduction > 1:
+        annotations = annotations[::reduction]
     if limit:
         annotations = annotations[:limit]
 
@@ -130,6 +133,7 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--batch", type=int, default=4)
     parser.add_argument("--imgsz", type=int, default=640)
+    parser.add_argument("--reduction", type=int, default=1, help="Use every Nth WIDER FACE item before optional train/val limits.")
     parser.add_argument("--train-limit", type=int, default=600)
     parser.add_argument("--val-limit", type=int, default=120)
     parser.add_argument("--workers", type=int, default=4)
@@ -140,14 +144,14 @@ def main() -> None:
     args = parser.parse_args()
 
     ensure_dirs()
-    prepare_split("train", args.train_limit)
-    prepare_split("val", args.val_limit)
+    prepare_split("train", args.train_limit, args.reduction)
+    prepare_split("val", args.val_limit, args.reduction)
     yaml_path = write_yaml()
 
     base_model = resolve_base_model(args.base)
     run_type = f"{args.family}_{Path(args.base).stem}_widerface_rocm"
-    run_name = model_name(run_type, args.batch, args.epochs, "run").removesuffix(".run")
-    output = MODEL_DIR / model_name(run_type, args.batch, args.epochs, "pt")
+    run_name = model_name(run_type, args.batch, args.epochs, "run", args.reduction).removesuffix(".run")
+    output = MODEL_DIR / model_name(run_type, args.batch, args.epochs, "pt", args.reduction)
 
     print("VRAM before training:", vram_status())
 

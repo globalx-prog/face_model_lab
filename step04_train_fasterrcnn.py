@@ -1,6 +1,7 @@
 # Trainiert Faster R-CNN auf WIDER FACE.
 # Wichtige Parameter: --epochs, --batch, --reduction, --lr, --workers,
 # --save-every. Speichert .pth-Checkpoints in trained_models/.
+# Namensschema: fasterrcnn_resnet50_fpn_rocm_bs<batch>_red<reduction>_ep<epochs>.pth.
 # Beispiel:
 #   python face_model_lab/step04_train_fasterrcnn.py --epochs 10 --batch 2 --reduction 1 --lr 0.0001 --save-every 1
 
@@ -149,7 +150,7 @@ def main() -> None:
 
     model.train()
     history = []
-    history_path = RESULTS_DIR / f"training_history_fasterrcnn_resnet50_fpn_rocm_bs{args.batch}_ep{args.epochs}_{timestamp()}.csv"
+    history_path = RESULTS_DIR / f"training_history_fasterrcnn_resnet50_fpn_rocm_bs{args.batch}_red{args.reduction}_ep{args.epochs}_{timestamp()}.csv"
     for epoch in range(args.epochs):
         total_loss = 0.0
         pbar = tqdm(loader, desc=f"Faster R-CNN epoch {epoch + 1}/{args.epochs}")
@@ -168,7 +169,7 @@ def main() -> None:
         checkpoint = ""
         print(f"epoch={epoch + 1} mean_loss={mean_loss:.4f}")
         if args.save_every and (epoch + 1) % args.save_every == 0:
-            checkpoint_path = MODEL_DIR / model_name("fasterrcnn_resnet50_fpn_rocm", args.batch, epoch + 1, "pth")
+            checkpoint_path = MODEL_DIR / model_name("fasterrcnn_resnet50_fpn_rocm", args.batch, epoch + 1, "pth", args.reduction)
             torch.save(model.state_dict(), checkpoint_path)
             checkpoint = str(checkpoint_path)
             print(f"checkpoint saved {checkpoint_path}")
@@ -185,7 +186,7 @@ def main() -> None:
         write_history(history_path, history)
         print(f"history updated {history_path}")
 
-    output = MODEL_DIR / model_name("fasterrcnn_resnet50_fpn_rocm", args.batch, args.epochs, "pth")
+    output = MODEL_DIR / model_name("fasterrcnn_resnet50_fpn_rocm", args.batch, args.epochs, "pth", args.reduction)
     torch.save(model.state_dict(), output)
     print(f"saved {output}")
 

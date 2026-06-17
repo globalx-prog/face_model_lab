@@ -2,6 +2,7 @@
 # Nicht direkt ausfuehren; diese Datei wird von den Step-Skripten importiert.
 # Setzbare zentrale Pfade unten: DATASET_DIR, ANNOTATIONS_DIR, MODEL_DIR,
 # RESULTS_DIR, YOLO_DATASET_DIR.
+# Modellnamen folgen: <modelltyp>_bs<batch>_red<reduction>_ep<epochs>.<suffix>.
 
 from __future__ import annotations
 
@@ -64,9 +65,10 @@ def vram_status(device: torch.device | str | None = None) -> dict[str, str]:
         return {"alloc": f"{allocated:.1f}G", "res": f"{reserved:.1f}G"}
 
 
-def model_name(model_type: str, batch_size: int, epochs: int, suffix: str) -> str:
+def model_name(model_type: str, batch_size: int, epochs: int, suffix: str, reduction: int | None = None) -> str:
     clean_type = model_type.replace("/", "_").replace("-", "").lower()
-    return f"{clean_type}_bs{batch_size}_ep{epochs}.{suffix}"
+    reduction_tag = f"_red{reduction}" if reduction is not None else ""
+    return f"{clean_type}_bs{batch_size}{reduction_tag}_ep{epochs}.{suffix}"
 
 
 def timestamp() -> str:
