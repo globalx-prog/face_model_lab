@@ -1,5 +1,7 @@
 # Face Model Lab
 
+#### Zusammenfassung des Projektes und Beschreibung der Arbeitsverteilung in der "Zusammenfassung.ipynb"
+
 Goal: find the strongest self-trained face detector for the video blurring pipeline.
 
 ## Recommended Strategy
