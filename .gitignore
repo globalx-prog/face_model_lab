@@ -13,3 +13,10 @@ runs/
 *.mp4
 *.avi
 *.mov
+
+
+/home/clemi/projekte/MIM/face_model_lab/praesentation_gliederung.md
+/home/clemi/projekte/MIM/face_model_lab/Zusammenfassung.ipynb
+
+# Presentation drafts
+praesentation_*.md

@@ -2,6 +2,8 @@
 # Wichtige Parameter: --model, --model-kind auto|fasterrcnn|retinanet|fcos,
 # --input, --output, --conf, --imgsz, --frame-skip, --max-frames,
 # --deinterlace, --blur-mode oval|box|pixelate.
+# Fuer gezieltes Blurring: erst --mode preview ausfuehren, dann mit
+# --target-track-ids oder --target-ranks konkrete erkannte Gesichter blurren.
 # Beispiel:
 #   python face_model_lab/step08_blur_video.py --model trained_models/yolo_yolov8m_widerface_rocm_bs2_red1_ep15.pt --input Videos/Feuerwehr_progressiv.mp4 --output Videos/lab_outputs/Feuerwehr_blur.mp4 --conf 0.25 --max-frames 300
 
@@ -25,6 +27,12 @@ from torchvision.models.detection.fcos import FCOSClassificationHead
 from torchvision.models.detection.retinanet import RetinaNetClassificationHead
 from tqdm.auto import tqdm
 from ultralytics import YOLO
+
+
+def parse_csv_values(value: str | None, cast=str) -> set:
+    if not value:
+        return set()
+    return {cast(part.strip()) for part in value.split(",") if part.strip()}
 
 
 def odd_kernel(value: int) -> int:
@@ -179,6 +187,82 @@ def pixelate(frame, box, padding_factor: float = 0.35, pixel_size: int = 18):
     return frame
 
 
+def build_detection(box, score: float | None = None, track_id: int | None = None, rank: int | None = None) -> dict:
+    return {
+        "box": np.asarray(box, dtype=float),
+        "score": None if score is None else float(score),
+        "track_id": None if track_id is None else int(track_id),
+        "rank": rank,
+    }
+
+
+def assign_left_to_right_ranks(detections: list[dict]) -> list[dict]:
+    ranked = sorted(detections, key=lambda det: (float(det["box"][0]), float(det["box"][1])))
+    for rank, det in enumerate(ranked, start=1):
+        det["rank"] = rank
+    return detections
+
+
+def box_region(box, width: int, height: int) -> set[str]:
+    x1, y1, x2, y2 = map(float, box)
+    cx = (x1 + x2) / 2.0
+    cy = (y1 + y2) / 2.0
+    regions = set()
+    if cx < width / 3:
+        regions.add("left")
+    elif cx > width * 2 / 3:
+        regions.add("right")
+    else:
+        regions.add("center")
+    if cy < height / 3:
+        regions.add("top")
+    elif cy > height * 2 / 3:
+        regions.add("bottom")
+    else:
+        regions.add("middle")
+    return regions
+
+
+def select_detections(detections: list[dict], args, frame_shape) -> list[dict]:
+    target_track_ids = parse_csv_values(args.target_track_ids, int)
+    target_ranks = parse_csv_values(args.target_ranks, int)
+    target_regions = parse_csv_values(args.target_regions, str)
+    has_filter = bool(target_track_ids or target_ranks or target_regions)
+    if not has_filter:
+        return detections
+
+    height, width = frame_shape[:2]
+    selected = []
+    for det in detections:
+        if target_track_ids and det.get("track_id") in target_track_ids:
+            selected.append(det)
+            continue
+        if target_ranks and det.get("rank") in target_ranks:
+            selected.append(det)
+            continue
+        if target_regions and box_region(det["box"], width, height) & target_regions:
+            selected.append(det)
+    return selected
+
+
+def draw_detection_labels(frame, detections: list[dict], selected: list[dict]) -> np.ndarray:
+    selected_keys = {(det.get("track_id"), det.get("rank")) for det in selected}
+    for det in detections:
+        x1, y1, x2, y2 = map(int, det["box"])
+        is_selected = (det.get("track_id"), det.get("rank")) in selected_keys
+        color = (0, 220, 0) if is_selected else (0, 165, 255)
+        label_parts = [f"rank {det.get('rank')}"]
+        if det.get("track_id") is not None:
+            label_parts.append(f"id {det['track_id']}")
+        if det.get("score") is not None:
+            label_parts.append(f"{det['score']:.2f}")
+        label = " | ".join(label_parts)
+        cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+        y_text = max(16, y1 - 6)
+        cv2.putText(frame, label, (x1, y_text), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2, cv2.LINE_AA)
+    return frame
+
+
 def infer_model_kind(model_path: Path) -> str:
     name = model_path.stem.lower()
     if "retinanet" in name:
@@ -250,7 +334,16 @@ def load_detector(model_path: Path, model_kind: str, conf: float, imgsz: int):
                 imgsz=imgsz,
                 device=device,
             )[0]
-            return result.boxes.xyxy.cpu().numpy() if result.boxes is not None else []
+            if result.boxes is None:
+                return []
+            boxes = result.boxes.xyxy.cpu().numpy()
+            scores = result.boxes.conf.cpu().numpy() if result.boxes.conf is not None else [None] * len(boxes)
+            track_ids = result.boxes.id.cpu().numpy().astype(int) if result.boxes.id is not None else [None] * len(boxes)
+            detections = [
+                build_detection(box, score=score, track_id=track_id)
+                for box, score, track_id in zip(boxes, scores, track_ids)
+            ]
+            return assign_left_to_right_ranks(detections)
 
         return detect
 
@@ -267,7 +360,12 @@ def load_detector(model_path: Path, model_kind: str, conf: float, imgsz: int):
                 prediction = model([frame_to_tensor(frame, device)])[0]
             scores = prediction["scores"].detach().cpu().numpy()
             boxes = prediction["boxes"].detach().cpu().numpy()
-            return boxes[scores >= conf]
+            detections = [
+                build_detection(box, score=score)
+                for box, score in zip(boxes, scores)
+                if score >= conf
+            ]
+            return assign_left_to_right_ranks(detections)
 
         return detect
 
@@ -291,6 +389,10 @@ def main() -> None:
     parser.add_argument("--mask-kernel", type=int, default=71)
     parser.add_argument("--blur-mode", choices=["oval", "box", "pixelate"], default="oval")
     parser.add_argument("--pixel-size", type=int, default=18)
+    parser.add_argument("--mode", choices=["blur", "preview"], default="blur", help="blur anonymizes selected faces; preview draws boxes/ranks/track IDs without blurring.")
+    parser.add_argument("--target-track-ids", default="", help="Comma-separated YOLO/ByteTrack IDs to blur, e.g. 1,4. Empty means all faces unless another target filter is set.")
+    parser.add_argument("--target-ranks", default="", help="Comma-separated left-to-right detection ranks per frame, e.g. 1,3. Useful when track IDs are unavailable.")
+    parser.add_argument("--target-regions", default="", help="Comma-separated regions to blur: left,center,right,top,middle,bottom.")
     args = parser.parse_args()
 
     input_path = Path(args.input)
@@ -311,16 +413,26 @@ def main() -> None:
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     writer = cv2.VideoWriter(str(output_path), cv2.VideoWriter_fourcc(*"mp4v"), fps, (width, height))
-    cached_boxes = []
+    cached_detections = []
     start = time.perf_counter()
+    processed_faces = 0
+    selected_faces = 0
 
     for frame_idx in tqdm(range(frame_limit), desc="face blur video"):
         ok, frame = cap.read()
         if not ok:
             break
         if frame_idx % args.frame_skip == 0:
-            cached_boxes = detector(frame)
-        for box in cached_boxes:
+            cached_detections = detector(frame)
+        selected_detections = select_detections(cached_detections, args, frame.shape)
+        processed_faces += len(cached_detections)
+        selected_faces += len(selected_detections)
+        if args.mode == "preview":
+            frame = draw_detection_labels(frame, cached_detections, selected_detections)
+            writer.write(frame)
+            continue
+        for det in selected_detections:
+            box = det["box"]
             x1, y1, x2, y2 = map(float, box)
             box_area = max(0.0, x2 - x1) * max(0.0, y2 - y1)
             if args.background_threshold_percent and box_area / frame_area < args.background_threshold_percent:
@@ -338,6 +450,10 @@ def main() -> None:
     elapsed = time.perf_counter() - start
     print(f"saved {output_path}")
     print(f"speed={frame_limit / elapsed:.2f} fps")
+    print(f"detections_seen={processed_faces}")
+    print(f"detections_selected={selected_faces}")
+    if args.mode == "preview":
+        print("preview mode: boxes show rank and YOLO track id. Use --target-track-ids or --target-ranks for the second blur run.")
 
 
 if __name__ == "__main__":

@@ -76,6 +76,8 @@ def prepare_split(split: str, limit: int | None = None, reduction: int = 1) -> N
 
     images_out = YOLO_DATASET_DIR / "images" / split
     labels_out = YOLO_DATASET_DIR / "labels" / split
+    shutil.rmtree(images_out, ignore_errors=True)
+    shutil.rmtree(labels_out, ignore_errors=True)
     images_out.mkdir(parents=True, exist_ok=True)
     labels_out.mkdir(parents=True, exist_ok=True)
 
