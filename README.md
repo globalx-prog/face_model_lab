@@ -42,7 +42,7 @@ Use the lab in this order:
 ```text
 README.md
 step00_common.py
-step01_training_evaluation_lab.ipynb
+step01_training_lab.ipynb
 step02_train_ultralytics_detector.py
 step03_train_torchvision_detector.py
 step04_train_fasterrcnn.py
@@ -52,11 +52,11 @@ step07_video_blurring_lab.ipynb
 step08_blur_video.py
 ```
 
-`step01_training_evaluation_lab.ipynb` is the main training and evaluation control surface. It calls the numbered Python scripts and shows progress/output. `step07_video_blurring_lab.ipynb` is the video workflow.
+`step01_training_lab.ipynb` is the main training overview. It shows the numbered training script commands. Evaluation is documented in step06_evaluation_lab.ipynb. `step07_video_blurring_lab.ipynb` is the video workflow.
 
 ## Bigger Training Runs
 
-Open `step01_training_evaluation_lab.ipynb` and change the config cell:
+Open `step01_training_lab.ipynb` and change the config cell:
 
 ```python
 RUN_PRESET = "smoke"   # "smoke", "medium" or "full"
