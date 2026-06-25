@@ -1,0 +1,29 @@
+\begin{frame}{Vergleich aller Modelle}
+\tiny
+\begin{tabularx}{\textwidth}{l r r r r}
+\toprule
+Breiter Smoke-Vergleich & GT-Faces & Treffer & Recall & ms/Bild \\
+\midrule
+FCOS red20 ep1 & 3.443 & 1.884 & 0,547 & 36,2 \\
+Faster R-CNN red20 ep1 & 3.443 & 1.714 & 0,498 & 51,4 \\
+YOLOv8m red20 ep1 & 3.443 & 1.399 & 0,406 & 43,7 \\
+RetinaNet red20 ep1 & 3.443 & 1.125 & 0,327 & 35,0 \\
+\bottomrule
+\end{tabularx}
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{l r r r r X}
+\toprule
+Red6/10-Favoritenvergleich & GT-Faces & Treffer & Recall & ms/Bild & Interpretation \\
+\midrule
+FCOS red6 ep10 & 5.015 & 3.375 & 0,673 & 55,7 & bester Recall \\
+YOLOv8m red6 ep10 & 5.015 & 2.445 & 0,488 & 31,2 & schneller Pipeline-Kandidat \\
+COCO FCOS & 5.015 & 224 & 0,045 & 44,6 & nicht face-finetuned \\
+COCO YOLOv8m & 5.015 & 46 & 0,009 & 17,3 & nicht face-finetuned \\
+\bottomrule
+\end{tabularx}
+\vspace{0.4em}
+\begin{itemize}
+    \item FCOS wird Qualitaetsfavorit; YOLOv8m bleibt Praxisfavorit fuer die Video-Pipeline.
+    \item COCO-Baselines zeigen, warum Face-Finetuning notwendig ist.
+\end{itemize}
+\end{frame}

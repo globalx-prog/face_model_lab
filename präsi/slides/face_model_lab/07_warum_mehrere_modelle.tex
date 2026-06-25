@@ -1,0 +1,18 @@
+\begin{frame}{Warum mehrere Modelle?}
+\small
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+Modell & Familie & Erwartung \\
+\midrule
+Faster R-CNN & Two-Stage & robuste Lokalisierung, aber mehr Rechenaufwand \\
+RetinaNet & One-Stage mit Focal Loss & schnelle Baseline, gut bei vielen Hintergrundbereichen \\
+FCOS & Anchor-free One-Stage & starker Recall ohne Anchor-Tuning \\
+YOLOv8m & praxisoptimierter One-Stage-Detector & schnelle Inferenz und einfache Videoanbindung \\
+\bottomrule
+\end{tabularx}
+\vspace{0.8em}
+\begin{itemize}
+    \item Face Detection wird als Object-Detection-Problem formuliert.
+    \item Der Vergleich trennt Qualitaetsfavorit und Praxisfavorit.
+\end{itemize}
+\end{frame}

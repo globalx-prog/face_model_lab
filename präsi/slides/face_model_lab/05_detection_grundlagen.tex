@@ -1,0 +1,18 @@
+\begin{frame}{Detection-Grundlagen}
+\small
+\begin{tabularx}{\textwidth}{l X X}
+\toprule
+Metrik & Bedeutung & Rolle im Projekt \\
+\midrule
+IoU & Ueberlappung von Vorhersagebox und Ground Truth & entscheidet, ob ein Face als gefunden gilt \\
+Confidence & Modell-Sicherheit fuer eine Box & steuert den Score-Threshold \\
+Recall & gefundene Gesichter / alle Gesichter & wichtigste Datenschutzmetrik \\
+Precision & korrekte Boxen / alle Boxen & reduziert unnoetige Blur-Boxen \\
+ms/Bild & Inferenzzeit pro Bild & entscheidend fuer Videos \\
+\bottomrule
+\end{tabularx}
+\vspace{0.8em}
+\begin{mynote}[Bewertung]
+Fuer Datenschutz ist ein verpasstes Gesicht kritischer als eine zusaetzliche Blur-Box.
+\end{mynote}
+\end{frame}
