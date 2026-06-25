@@ -1,0 +1,16 @@
+\frametitle{Projektstruktur}
+\small
+\begin{tabularx}{\textwidth}{>{\ttfamily}l X}
+\toprule
+datasets/wider\_face/ & Rohdaten und Splits des WIDER-FACE-Datensatzes. \\
+annotations/ & COCO-Annotationen fuer Torchvision-Training und Evaluation. \\
+trained\_models/ & Trainierte Gewichte und YOLO-Run-Artefakte. \\
+model\_results/ & CSV/JSON-Ergebnisse, Plots und Trainingshistorien. \\
+Videos/lab\_outputs/ & Geblurrte Videos, Previews und selektive Testlaeufe. \\
+\bottomrule
+\end{tabularx}
+\vspace{0.8em}
+\begin{itemize}
+    \item Die Trennung macht Training, Evaluation und Videoausgabe reproduzierbar.
+    \item Notebooks dokumentieren die Schritte; Skripte kapseln die ausfuehrbaren Laeufe.
+\end{itemize}

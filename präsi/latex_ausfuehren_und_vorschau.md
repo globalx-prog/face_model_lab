@@ -3,7 +3,7 @@
 ## 1. In den Praesentationsordner wechseln
 
 ```bash
-cd "/home/clemens/OneDrive/Dokumente/Master MIM/Fächer/Muserterkennung/Projekt/HTWK___Mustererkennung_präsi"
+cd "/home/clemens/OneDrive/Dokumente/Master MIM/Fächer/Muserterkennung/Projekt/face_mode_lab/präsi"
 ```
 
 ## 2. PDF bauen
@@ -12,8 +12,8 @@ Schneller Testlauf:
 
 ```bash
 xelatex main.tex
+xelatex -output-directory=main_out main.tex
 
-lualatex main.tex
 ```
 
 Robuster Lauf mit Literaturverzeichnis:
