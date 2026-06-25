@@ -1,0 +1,263 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{Lin2017FocalLoss}{article}{}
+      \name{author}{5}{}{%
+        {{hash=08f925fe4692d130a1d7cb7d94483351}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={Tsung-Yi},
+           giveni={T\bibinithyphendelim Y\bibinitperiod}}}%
+        {{hash=d87be7c19fa16049347907c9820816c6}{%
+           family={Goyal},
+           familyi={G\bibinitperiod},
+           given={Priya},
+           giveni={P\bibinitperiod}}}%
+        {{hash=bd5dadbe57bedc5957c19a3154c4d424}{%
+           family={Girshick},
+           familyi={G\bibinitperiod},
+           given={Ross},
+           giveni={R\bibinitperiod}}}%
+        {{hash=6b4b60e909e78633945f3f9c9dc83e01}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Kaiming},
+           giveni={K\bibinitperiod}}}%
+        {{hash=ecd149fdcb3e0503881d49e545744c3d}{%
+           family={Dollár},
+           familyi={D\bibinitperiod},
+           given={Piotr},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{3b7e00bc88d7aca4d4d5ddb8c252e36c}
+      \strng{fullhash}{4ccabcfdf9c34f3d9a88fdca5bb95dd5}
+      \strng{bibnamehash}{3b7e00bc88d7aca4d4d5ddb8c252e36c}
+      \strng{authorbibnamehash}{3b7e00bc88d7aca4d4d5ddb8c252e36c}
+      \strng{authornamehash}{3b7e00bc88d7aca4d4d5ddb8c252e36c}
+      \strng{authorfullhash}{4ccabcfdf9c34f3d9a88fdca5bb95dd5}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:1708.02002}
+      \field{title}{{Focal Loss for Dense Object Detection}}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1708.02002
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1708.02002
+      \endverb
+    \endentry
+    \entry{KaggleWIDERFACE}{online}{}
+      \name{author}{1}{}{%
+        {{hash=e916c555d917e480d1fafbfeaeb0c96d}{%
+           family={{mksaad}},
+           familyi={m\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Kaggle}%
+      }
+      \strng{namehash}{e916c555d917e480d1fafbfeaeb0c96d}
+      \strng{fullhash}{e916c555d917e480d1fafbfeaeb0c96d}
+      \strng{bibnamehash}{e916c555d917e480d1fafbfeaeb0c96d}
+      \strng{authorbibnamehash}{e916c555d917e480d1fafbfeaeb0c96d}
+      \strng{authornamehash}{e916c555d917e480d1fafbfeaeb0c96d}
+      \strng{authorfullhash}{e916c555d917e480d1fafbfeaeb0c96d}
+      \field{sortinit}{m}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Kaggle dataset: \url{https://www.kaggle.com/datasets/mksaad/wider-face-a-face-detection-benchmark}}
+      \field{title}{{WIDER FACE: A Face Detection Benchmark Dataset on Kaggle}}
+      \field{urlday}{25}
+      \field{urlmonth}{6}
+      \field{urlyear}{2026}
+      \field{year}{2020}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.kaggle.com/datasets/mksaad/wider-face-a-face-detection-benchmark
+      \endverb
+      \verb{url}
+      \verb https://www.kaggle.com/datasets/mksaad/wider-face-a-face-detection-benchmark
+      \endverb
+    \endentry
+    \entry{Ren2015FasterRCNN}{article}{}
+      \name{author}{4}{}{%
+        {{hash=bb295293acacd54387339079ebbe4ead}{%
+           family={Ren},
+           familyi={R\bibinitperiod},
+           given={Shaoqing},
+           giveni={S\bibinitperiod}}}%
+        {{hash=6b4b60e909e78633945f3f9c9dc83e01}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Kaiming},
+           giveni={K\bibinitperiod}}}%
+        {{hash=bd5dadbe57bedc5957c19a3154c4d424}{%
+           family={Girshick},
+           familyi={G\bibinitperiod},
+           given={Ross},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f85751488058842b5777c7b4074077b5}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Jian},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{f086ca4da3e532e8a41cb758ea461825}
+      \strng{fullhash}{008a132af3e2d4ff15eb01a8fb4b005c}
+      \strng{bibnamehash}{f086ca4da3e532e8a41cb758ea461825}
+      \strng{authorbibnamehash}{f086ca4da3e532e8a41cb758ea461825}
+      \strng{authornamehash}{f086ca4da3e532e8a41cb758ea461825}
+      \strng{authorfullhash}{008a132af3e2d4ff15eb01a8fb4b005c}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:1506.01497}
+      \field{title}{{Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks}}
+      \field{year}{2015}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1506.01497
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1506.01497
+      \endverb
+    \endentry
+    \entry{Tian2019FCOS}{article}{}
+      \name{author}{4}{}{%
+        {{hash=bc421e5244d81fc563e27ed9bfb33faf}{%
+           family={Tian},
+           familyi={T\bibinitperiod},
+           given={Zhi},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=9e49384c78f6861746fe787b12339aed}{%
+           family={Shen},
+           familyi={S\bibinitperiod},
+           given={Chunhua},
+           giveni={C\bibinitperiod}}}%
+        {{hash=dd060cd064f8f607eb1bee6712820270}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Hao},
+           giveni={H\bibinitperiod}}}%
+        {{hash=399cf1aabecf0867957b50a0628a019a}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Tong},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{c9dfde0abc474bbdfcf4e274fd49a3f9}
+      \strng{fullhash}{cae85ea7826c1ed3ab79032accd1201f}
+      \strng{bibnamehash}{c9dfde0abc474bbdfcf4e274fd49a3f9}
+      \strng{authorbibnamehash}{c9dfde0abc474bbdfcf4e274fd49a3f9}
+      \strng{authornamehash}{c9dfde0abc474bbdfcf4e274fd49a3f9}
+      \strng{authorfullhash}{cae85ea7826c1ed3ab79032accd1201f}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:1904.01355}
+      \field{title}{{FCOS: Fully Convolutional One-Stage Object Detection}}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1904.01355
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1904.01355
+      \endverb
+    \endentry
+    \entry{Yang2015WIDERFACE}{article}{}
+      \name{author}{4}{}{%
+        {{hash=5a7fe627a1432331b3a2a443fd53e216}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Shuo},
+           giveni={S\bibinitperiod}}}%
+        {{hash=e85079235b2a8c88ee9360e55b37523a}{%
+           family={Luo},
+           familyi={L\bibinitperiod},
+           given={Ping},
+           giveni={P\bibinitperiod}}}%
+        {{hash=8cdede553c7d496dea2f52be5697d19e}{%
+           family={Loy},
+           familyi={L\bibinitperiod},
+           given={Chen\bibnamedelima Change},
+           giveni={C\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=7e09524e32e7b51c169850f848787677}{%
+           family={Tang},
+           familyi={T\bibinitperiod},
+           given={Xiaoou},
+           giveni={X\bibinitperiod}}}%
+      }
+      \strng{namehash}{25045b723ef9ad70cd94b685fb3b03ba}
+      \strng{fullhash}{978253389a79b6a9d7008991e568be6d}
+      \strng{bibnamehash}{25045b723ef9ad70cd94b685fb3b03ba}
+      \strng{authorbibnamehash}{25045b723ef9ad70cd94b685fb3b03ba}
+      \strng{authornamehash}{25045b723ef9ad70cd94b685fb3b03ba}
+      \strng{authorfullhash}{978253389a79b6a9d7008991e568be6d}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:1511.06523}
+      \field{title}{{WIDER FACE: A Face Detection Benchmark}}
+      \field{year}{2015}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1511.06523
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1511.06523
+      \endverb
+    \endentry
+    \entry{Yaseen2024YOLOv8}{article}{}
+      \name{author}{1}{}{%
+        {{hash=5eec75ed6272db6ea5cc80721e9f7521}{%
+           family={Yaseen},
+           familyi={Y\bibinitperiod},
+           given={Muhammad},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{fullhash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{bibnamehash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{authorbibnamehash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{authornamehash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{authorfullhash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:2408.15857}
+      \field{title}{{What is YOLOv8: An In-Depth Exploration of the Internal Features of the Next-Generation Object Detector}}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2408.15857
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2408.15857
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
