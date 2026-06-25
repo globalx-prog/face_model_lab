@@ -1,0 +1,42 @@
+\begin{frame}{Wie funktionieren die Modelle?}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth} X}
+\toprule
+Faster R-CNN & Ein Region Proposal Network schlaegt Bereiche vor; danach werden Regionen klassifiziert und Boxen verfeinert. \\
+RetinaNet & Klassifiziert und lokalisiert direkt auf Feature Maps; Focal Loss betont schwierige Beispiele. \\
+FCOS & Anchor-free: sagt Objektpositionen pro Feature-Map-Position ohne vordefinierte Anchor-Boxen voraus. \\
+YOLOv8m & One-Stage-Detector mit optimierter Inferenz, Run-Artefakten und direkter Video-Pipeline-Anbindung. \\
+\bottomrule
+\end{tabularx}
+\vspace{0.6em}
+\includegraphics[width=\textwidth,height=0.28\textheight,keepaspectratio]{imglib/face_model_lab/yolo_val_predictions.jpg}
+\end{frame}
+
+\begin{frame}{Modellfunktion im Ablauf}
+\scriptsize
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.48\textwidth}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.30\textwidth} X}
+\toprule
+Schritt & Funktion \\
+\midrule
+Backbone & extrahiert Merkmale aus dem Bild \\
+Feature Maps & bilden Gesichter in mehreren Skalen ab \\
+Head & sagt Klasse, Score und Box voraus \\
+NMS & entfernt doppelte Treffer \\
+\bottomrule
+\end{tabularx}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{itemize}
+    \item Two-Stage-Modelle pruefen erst Kandidatenregionen.
+    \item One-Stage-Modelle lokalisieren und klassifizieren direkt.
+    \item Anchor-free-Modelle ersetzen vordefinierte Box-Anker durch Punktvorhersagen.
+\end{itemize}
+\end{column}
+\end{columns}
+\vspace{0.4em}
+\begin{mynote}[Kernidee]
+Alle Varianten erzeugen am Ende Bounding Boxes mit Confidence-Werten; sie unterscheiden sich vor allem darin, wie Kandidaten entstehen und wie direkt lokalisiert wird.
+\end{mynote}
+\end{frame}

@@ -1,6 +1,7 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2026.6.25)  25 JUN 2026 13:38
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2026.6.25)  25 JUN 2026 15:08
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
 **main.tex
 (./main.tex
@@ -1386,8 +1387,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 17--17
  []
 
 
-Underfull \hbox (badness 1024) in paragraph at lines 17--17
-\TU/Arial(0)/m/n/10.95 findet moeglichst
+Underfull \hbox (badness 10000) in paragraph at lines 17--17
+\TU/Arial(0)/m/n/10.95 findet möglichst
  []
 
 
@@ -1396,18 +1397,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 17--17
  []
 
 
-Underfull \hbox (badness 3536) in paragraph at lines 17--17
-\TU/Arial(0)/m/n/10.95 und bleibt prak-
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 17--17
-\TU/Arial(0)/m/n/10.95 tisch genug
- []
-
-
-Underfull \hbox (badness 2073) in paragraph at lines 17--17
-\TU/Arial(0)/m/n/10.95 fuer eine Video-
+\TU/Arial(0)/m/n/10.95 genug für eine
  []
 
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
@@ -1448,22 +1439,12 @@ File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 ])
 (./slides/face_model_lab/05_detection_grundlagen.tex
 Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/Arial(0)/m/n/10 Ueberlappung von
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 Vorhersagebox und
+[]|\TU/Arial(0)/m/n/10 Vorhersagebox und
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 18--18
 []|\TU/Arial(0)/m/n/10 Modell-Sicherheit fuer
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/Arial(0)/m/n/10 steuert den Score-
  []
 
 
@@ -1473,21 +1454,12 @@ Underfull \hbox (badness 7944) in paragraph at lines 18--18
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/Arial(0)/m/n/10 wichtigste Daten-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
 []|\TU/Arial(0)/m/n/10 korrekte Boxen / alle
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/Arial(0)/m/n/10 entscheidend fuer
- []
-
-
-Overfull \vbox (21.93529pt too high) detected at line 18
+Underfull \hbox (badness 1221) in paragraph at lines 18--18
+[]|\TU/Arial(0)/m/n/10 reduziert unnötige Blur-
  []
 
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
@@ -1506,117 +1478,13 @@ File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 
 ]
 (./slides/face_model_lab/07_warum_mehrere_modelle.tex
-Overfull \hbox (3.79805pt too wide) in paragraph at lines 18--18
-[]|\TU/Arial(0)/m/n/10 Erwartung| 
+Underfull \hbox (badness 6204) in paragraph at lines 18--18
+[]|\TU/Arial(0)/m/n/10 robuste Lokalisierung, aber
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/Arial(0)/m/n/10 robuste
- []
-
-
-Overfull \hbox (19.92598pt too wide) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 Lokalisierung,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 aber
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 mehr
- []
-
-
-Overfull \hbox (30.49727pt too wide) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 Rechenaufwand| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/Arial(0)/m/n/10 schnelle
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 Baseline,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 gut bei
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 vielen
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 Hinter-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 grund-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 bere-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/Arial(0)/m/n/10 starker
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 Recall
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 ohne
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 Anchor-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/Arial(0)/m/n/10 schnelle
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 Inferenz
- []
-
-
-Underfull \hbox (badness 6675) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 und ein-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 fache
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10 Videoan-
- []
-
-
-Overfull \vbox (139.5732pt too high) detected at line 18
+Underfull \hbox (badness 1028) in paragraph at lines 18--18
+[]|\TU/Arial(0)/m/n/10 starker Recall ohne Anchor-
  []
 
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
@@ -1624,13 +1492,18 @@ File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 [11
 
 ]) (./slides/face_model_lab/08_wie_funktionieren_die_modelle.tex
-Underfull \hbox (badness 4279) in paragraph at lines 13--13
+Underfull \hbox (badness 2401) in paragraph at lines 13--13
 []|\TU/Arial(0)/m/n/10 Klassifiziert und lokalisiert direkt auf Feature
  []
 
 
-Underfull \hbox (badness 2772) in paragraph at lines 13--13
-\TU/Arial(0)/m/n/10 Map-Position ohne vordefinierte Anchor-Boxen
+Underfull \hbox (badness 10000) in paragraph at lines 13--13
+[]|\TU/Arial(0)/m/n/10 One-Stage-Detector mit optimierter Inferenz,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 13--13
+\TU/Arial(0)/m/n/10 Run-Artefakten und direkter Video-Pipeline-
  []
 
 File: imglib/face_model_lab/yolo_val_predictions.jpg Graphic file (type bmp)
@@ -1639,101 +1512,58 @@ File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
 [12
 
-]) (./slides/face_model_lab/09_training_und_ressourcen.tex
-
-Package tabularx Warning: X Columns too narrow (table too wide)
-(tabularx)                 on input line 22.
-
-
-Overfull \hbox (9.33594pt too wide) in paragraph at lines 22--22
-[]|\TU/Arial(0)/m/n/8 GPU| 
+]
+Underfull \hbox (badness 10000) in paragraph at lines 42--42
+[]|\TU/Arial(0)/m/n/8 extrahiert Merkmale
  []
 
 
-Overfull \hbox (9.77734pt too wide) in paragraph at lines 22--22
-[]|\TU/Arial(0)/m/n/8 AMD
+Underfull \hbox (badness 10000) in paragraph at lines 42--42
+[]|\TU/Arial(0)/m/n/8 bilden Gesichter in
  []
 
 
-Overfull \hbox (20.02344pt too wide) in paragraph at lines 22--22
-\TU/Arial(0)/m/n/8 Radeon
- []
-
-
-Overfull \hbox (9.33594pt too wide) in paragraph at lines 22--22
-\TU/Arial(0)/m/n/8 PRO
- []
-
-
-Overfull \hbox (17.34766pt too wide) in paragraph at lines 22--22
-\TU/Arial(0)/m/n/8 W7800
- []
-
-
-Overfull \hbox (12.45703pt too wide) in paragraph at lines 22--22
-\TU/Arial(0)/m/n/8 48GB| 
- []
-
-
-Overfull \hbox (9.77734pt too wide) in paragraph at lines 22--22
-[]|\TU/Arial(0)/m/n/8 AMD
- []
-
-
-Overfull \hbox (20.02344pt too wide) in paragraph at lines 22--22
-\TU/Arial(0)/m/n/8 Radeon
- []
-
-
-Overfull \hbox (9.33594pt too wide) in paragraph at lines 22--22
-\TU/Arial(0)/m/n/8 PRO
- []
-
-
-Overfull \hbox (17.34766pt too wide) in paragraph at lines 22--22
-\TU/Arial(0)/m/n/8 W7800
- []
-
-
-Overfull \hbox (12.45703pt too wide) in paragraph at lines 22--22
-\TU/Arial(0)/m/n/8 48GB| 
- []
-
-
-Overfull \hbox (86.04483pt too wide) in alignment at lines 22--22
-[][][][][][] 
- []
-
-File: imglib/face_model_lab/lernkurven_loss_accuracy.png Graphic file (type bmp
-)
-<imglib/face_model_lab/lernkurven_loss_accuracy.png>
-
-Overfull \vbox (29.16635pt too high) detected at line 22
+Underfull \hbox (badness 10000) in paragraph at lines 42--42
+[]|\TU/Arial(0)/m/n/8 sagt Klasse, Score
  []
 
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
 [13
 
-]) (./slides/face_model_lab/10_evaluation_und_metriken.tex
-Overfull \hbox (40.67004pt too wide) in paragraph at lines 27--27
-[][]  
+]) (./slides/face_model_lab/09_training_und_ressourcen.tex
+Underfull \hbox (badness 10000) in paragraph at lines 23--23
+[]|\TU/Arial(0)/m/n/8 Precision 0,839; Recall
  []
 
-File: imglib/face_model_lab/red20_training_vs_eval.png Graphic file (type bmp)
-<imglib/face_model_lab/red20_training_vs_eval.png>
+
+Underfull \hbox (badness 5022) in paragraph at lines 23--23
+\TU/Arial(0)/m/n/8 0,579; mAP50 0,660 im
+ []
+
+File: imglib/face_model_lab/lernkurven_loss_accuracy.png Graphic file (type bmp
+)
+<imglib/face_model_lab/lernkurven_loss_accuracy.png>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
 [14
 
-]) (./slides/face_model_lab/11_vergleich_aller_modelle.tex
+]) (./slides/face_model_lab/10_evaluation_und_metriken.tex
+File: imglib/face_model_lab/red20_training_vs_eval.png Graphic file (type bmp)
+<imglib/face_model_lab/red20_training_vs_eval.png>
+File: imglib/HTWK_OHNE.png Graphic file (type bmp)
+<imglib/HTWK_OHNE.png>
+ [15
+
+])
+(./slides/face_model_lab/11_vergleich_aller_modelle.tex
 Underfull \hbox (badness 10000) in alignment at lines 29--29
 [][][][][] 
  []
 
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[15
+[16
 
 ]) (./slides/face_model_lab/12_vergleichsgrafiken_und_thresholds.tex
 File: imglib/face_model_lab/evaluationsdashboard.png Graphic file (type bmp)
@@ -1742,41 +1572,25 @@ File: imglib/face_model_lab/red6_validation_recall.png Graphic file (type bmp)
 <imglib/face_model_lab/red6_validation_recall.png>
 File: imglib/face_model_lab/red6_threshold_sweep.png Graphic file (type bmp)
 <imglib/face_model_lab/red6_threshold_sweep.png>
-
-Overfull \vbox (24.18132pt too high) detected at line 17
- []
-
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[16
+
+[17
 
 ]) (./slides/face_model_lab/13_bestes_modell_und_uebergabe.tex
 File: imglib/face_model_lab/yolo_results.png Graphic file (type bmp)
 <imglib/face_model_lab/yolo_results.png>
 File: imglib/face_model_lab/yolo_box_pr_curve.png Graphic file (type bmp)
 <imglib/face_model_lab/yolo_box_pr_curve.png>
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]\TU/Arial(0)/m/n/10.95 Jetzt schauen wir,
- []
-
-
-Underfull \hbox (badness 1360) in paragraph at lines 18--18
-\TU/Arial(0)/m/n/10.95 wie aus der Detektion
- []
-
-
-Overfull \vbox (54.45998pt too high) detected at line 18
- []
-
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[17
+ [18
 
 ])
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
- [18
+
+[19
 
 ] (./slides/face_model_lab/14_video_pipeline.tex
 Underfull \hbox (badness 1292) in paragraph at lines 20--20
@@ -1791,24 +1605,24 @@ Overfull \vbox (28.91594pt too high) detected at line 20
 
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[19
+[20
 
 ]) (./slides/face_model_lab/15_selektives_blurring.tex
-File: imglib/HTWK_OHNE.png Graphic file (type bmp)
-<imglib/HTWK_OHNE.png>
- [20
-
-])
-(./slides/face_model_lab/16_ergebnisvideo_und_blur_qualitaet.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [21
 
 ])
-(./slides/face_model_lab/17_fazit.tex
+(./slides/face_model_lab/16_ergebnisvideo_und_blur_qualitaet.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [22
+
+])
+(./slides/face_model_lab/17_fazit.tex
+File: imglib/HTWK_OHNE.png Graphic file (type bmp)
+<imglib/HTWK_OHNE.png>
+ [23
 
 ])) (./slides//citations/citations.tex
 
@@ -1816,7 +1630,7 @@ LaTeX Warning: Empty bibliography on input line 5.
 
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[23
+[24
 
 ])
 \tf@nav=\write7
@@ -1840,12 +1654,12 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 36062 strings out of 476830
- 773213 string characters out of 5803031
+ 36066 strings out of 476830
+ 773268 string characters out of 5803031
  1932627 words of memory out of 5000000
- 57292 multiletter control sequences out of 15000+600000
+ 57296 multiletter control sequences out of 15000+600000
  565088 words of font info for 102 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  111i,15n,129p,1129b,1120s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (23 pages).
+Output written on main.xdv (24 pages, 283648 bytes).

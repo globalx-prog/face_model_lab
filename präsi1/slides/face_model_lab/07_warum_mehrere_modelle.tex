@@ -1,13 +1,13 @@
 \begin{frame}{Warum mehrere Modelle?}
 \small
-\begin{tabularx}{\textwidth}{l l X}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.18\textwidth} >{\raggedright\arraybackslash}p{0.27\textwidth} X}
 \toprule
 Modell & Familie & Erwartung \\
 \midrule
 Faster R-CNN & Two-Stage & robuste Lokalisierung, aber mehr Rechenaufwand \\
 RetinaNet & One-Stage mit Focal Loss & schnelle Baseline, gut bei vielen Hintergrundbereichen \\
 FCOS & Anchor-free One-Stage & starker Recall ohne Anchor-Tuning \\
-YOLOv8m & praxisoptimierter One-Stage-Detector & schnelle Inferenz und einfache Videoanbindung \\
+YOLOv8m & praxisoptimierter One-Stage & schnelle Inferenz und einfache Videoanbindung \\
 \bottomrule
 \end{tabularx}
 \vspace{0.8em}
