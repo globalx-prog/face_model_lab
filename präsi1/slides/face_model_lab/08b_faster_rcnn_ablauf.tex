@@ -1,0 +1,23 @@
+\begin{frame}{Faster R-CNN: Ablauf im Projekt}
+\small
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.46\textwidth}
+\begin{enumerate}
+    \item Backbone extrahiert Bildmerkmale.
+    \item RPN schlägt mögliche Gesichtsregionen vor.
+    \item ROI Head klassifiziert Regionen und verfeinert Boxen.
+    \item IoU und Confidence entscheiden über Treffer.
+\end{enumerate}
+\end{column}
+\begin{column}{0.50\textwidth}
+\begin{itemize}
+    \item WIDER FACE wurde in passende Annotationen für Torchvision übertragen.
+    \item Im Red20-Smoke-Test lief Faster R-CNN gegen YOLOv8m, RetinaNet und FCOS.
+    \item Ergebnis: guter Recall, aber höhere Latenz als schnellere One-Stage-Ansätze.
+\end{itemize}
+\end{column}
+\end{columns}
+\vspace{0.5em}
+\scriptsize
+\textbf{Unterschied:} Faster R-CNN sucht erst Kandidatenregionen und prüft sie danach genauer. YOLO/RetinaNet lokalisieren direkter; FCOS arbeitet zusätzlich anchor-free.
+\end{frame}

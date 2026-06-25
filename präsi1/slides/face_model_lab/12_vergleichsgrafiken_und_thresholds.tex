@@ -1,17 +1,25 @@
-\begin{frame}{Vergleichsgrafiken und Thresholds}
+\begin{frame}{Vergleichsgrafiken: Dashboard}
+\includegraphics[width=\textwidth,height=0.57\textheight,keepaspectratio]{imglib/face_model_lab/evaluationsdashboard.png}
+\vspace{0.2em}
+\scriptsize
+\begin{itemize}
+    \item Dashboard: Recall, Treffer, Latenz und Baselines; FCOS dominiert beim Recall, YOLOv8m bleibt der praktischere Video-Kandidat.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Recall und Thresholds}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.5\textwidth}
-\includegraphics[width=\textwidth,height=0.47\textheight,keepaspectratio]{imglib/face_model_lab/evaluationsdashboard.png}
+\begin{column}{0.49\textwidth}
+\includegraphics[width=\textwidth,height=0.50\textheight,keepaspectratio]{imglib/face_model_lab/red6_validation_recall.png}
 \end{column}
-\begin{column}{0.48\textwidth}
-\includegraphics[width=\textwidth,height=0.23\textheight,keepaspectratio]{imglib/face_model_lab/red6_validation_recall.png}
-\includegraphics[width=\textwidth,height=0.23\textheight,keepaspectratio]{imglib/face_model_lab/red6_threshold_sweep.png}
+\begin{column}{0.49\textwidth}
+\includegraphics[width=\textwidth,height=0.50\textheight,keepaspectratio]{imglib/face_model_lab/red6_threshold_sweep.png}
 \end{column}
 \end{columns}
-\vspace{0.4em}
+\vspace{0.3em}
 \small
 \begin{itemize}
-    \item Hoehere Thresholds reduzieren Fehlalarme; gleichzeitig sinkt der Recall.
-    \item Fuer Datenschutz ist ein niedrigerer Threshold plausibel, weil uebersehene Gesichter kritischer sind.
+    \item Höhere Thresholds reduzieren Fehlalarme; gleichzeitig sinkt der Recall.
+    \item Für Datenschutz ist ein niedrigerer Threshold plausibel, weil übersehene Gesichter kritischer sind.
 \end{itemize}
 \end{frame}

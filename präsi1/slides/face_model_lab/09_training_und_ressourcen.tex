@@ -12,12 +12,14 @@ Red6-Kandidatenlauf & YOLOv8m, FCOS & 2.147 & 10 & 2 & AMD Radeon PRO W7800 48GB
 \vspace{0.5em}
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.28\textwidth} r r X}
 \toprule
-Modell & Trainingszeit & Groesse & Trainingshinweis \\
+Modell & Trainingszeit & Größe & Trainingshinweis \\
 \midrule
 YOLOv8m red6 ep10 & 16,1 min & 50 MB & Precision 0,839; Recall 0,579; mAP50 0,660 im YOLO-Run \\
 FCOS red6 ep10 & ca. 58 min & 123 MB & Mean Loss 1,243 $\rightarrow$ 0,735 \\
 \bottomrule
 \end{tabularx}
-\vspace{0.4em}
-\includegraphics[width=\textwidth,height=0.34\textheight,keepaspectratio]{imglib/face_model_lab/lernkurven_loss_accuracy.png}
+\vspace{0.15em}
+\includegraphics[width=\textwidth,height=0.24\textheight,keepaspectratio]{imglib/face_model_lab/lernkurven_loss_accuracy.png}
+\vspace{0.05em}
+\textcolor{red}{\tiny TODO Rohdaten: CSV/JSON-Trainingshistorien für YOLO und FCOS ergänzen; erst danach Vergleichsgrafik neu plotten.}
 \end{frame}

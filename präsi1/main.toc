@@ -1,3 +1,3 @@
 \beamer@sectionintoc {1}{Problem und Projekt}{3}{0}{1}
 \beamer@sectionintoc {2}{Modelle und Evaluation}{10}{0}{2}
-\beamer@sectionintoc {3}{Video-Anonymisierung}{19}{0}{3}
+\beamer@sectionintoc {3}{Video-Anonymisierung}{21}{0}{3}
