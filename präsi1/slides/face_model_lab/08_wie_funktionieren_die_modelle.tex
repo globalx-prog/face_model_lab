@@ -1,42 +1,15 @@
 \begin{frame}{Wie funktionieren die Modelle?}
 \small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth} X}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.24\textwidth} X >{\raggedright\arraybackslash}p{0.25\textwidth}}
 \toprule
-Faster R-CNN \cite{Ren2015FasterRCNN} & Ein Region Proposal Network schlägt Bereiche vor; danach werden Regionen klassifiziert und Boxen verfeinert. \\
-RetinaNet \cite{Lin2017FocalLoss} & Klassifiziert und lokalisiert direkt auf Feature Maps; Focal Loss betont schwierige Beispiele. \\
-FCOS \cite{Tian2019FCOS} & Anchor-free: sagt Objektpositionen pro Feature-Map-Position ohne vordefinierte Anchor-Boxen voraus. \\
-YOLOv8m \cite{Yaseen2024YOLOv8} & One-Stage-Detector mit optimierter Inferenz, Run-Artefakten und direkter Video-Pipeline-Anbindung. \\
-\bottomrule
-\end{tabularx}
-\vspace{0.6em}
-\includegraphics[width=\textwidth,height=0.28\textheight,keepaspectratio]{imglib/face_model_lab/yolo_val_predictions.jpg}
-\end{frame}
-
-\begin{frame}{Modellfunktion im Ablauf}
-\scriptsize
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.48\textwidth}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.30\textwidth} X}
-\toprule
-Schritt & Funktion \\
+Modell & Prinzip & Stärke \\
 \midrule
-Backbone & extrahiert Merkmale aus dem Bild \\
-Feature Maps & bilden Gesichter in mehreren Skalen ab \\
-Head & sagt Klasse, Score und Box voraus \\
-NMS & entfernt doppelte Treffer \\
+Faster R-CNN \cite{Ren2015FasterRCNN} & erst Vorschläge, dann Prüfung & robuste Boxen \\
+RetinaNet \cite{Lin2017FocalLoss} & direkte Vorhersage mit Focal Loss & schwierige Beispiele \\
+FCOS \cite{Tian2019FCOS} & direkte Vorhersage ohne Anchor & hoher Recall \\
+YOLOv8m \cite{Yaseen2024YOLOv8} & direkte, optimierte Vorhersage & Video-Pipeline \\
 \bottomrule
 \end{tabularx}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{itemize}
-    \item Two-Stage-Modelle prüfen erst Kandidatenregionen.
-    \item One-Stage-Modelle lokalisieren und klassifizieren direkt.
-    \item Anchor-free-Modelle ersetzen vordefinierte Box-Anker durch Punktvorhersagen.
-\end{itemize}
-\end{column}
-\end{columns}
-\vspace{0.4em}
-\begin{mynote}[Kernidee]
-Alle Varianten erzeugen am Ende Bounding Boxes mit Confidence-Werten; sie unterscheiden sich vor allem darin, wie Kandidaten entstehen und wie direkt lokalisiert wird.
-\end{mynote}
+\vspace{0.7em}
+\includegraphics[width=\textwidth,height=0.28\textheight,keepaspectratio]{imglib/face_model_lab/yolo_val_predictions.jpg}
 \end{frame}

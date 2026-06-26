@@ -1,19 +1,19 @@
 # Fdb version 4
-["biber main_out/main"] 1782395244.17805 "main_out/main.bcf" "main_out/main.bbl" "main_out/main" 1782395266.80856 0
-  "main_out/main.bcf" 1782395263.77958 108754 5b1f552f189aaad32da04babdb15c556 "xelatex"
+["biber main_out/main"] 1782484592.90869 "main_out/main.bcf" "main_out/main.bbl" "main_out/main" 1782484675.59371 0
+  "main_out/main.bcf" 1782484672.68652 108681 b9296e700bfe940b742b1fc5cd0394a0 "xelatex"
   "references.bib" 1782395232.10907 8886 1af3b69daa2f6657610d3a9bd670cecf ""
   (generated)
   "main_out/main.bbl"
   "main_out/main.blg"
   (rewritten before read)
-["xdvipdfmx"] 1782395264.01137 "main_out/main.xdv" "main_out/main.pdf" "main_out/main" 1782395266.81621 0
+["xdvipdfmx"] 1782484672.94118 "main_out/main.xdv" "main_out/main.pdf" "main_out/main" 1782484675.60222 0
   "main.xdv" 0 -1 0 ""
-  "main_out/main.xdv" 1782395263.78461 331008 ec81f662f00433e11fd79f3db445ebbd "xelatex"
+  "main_out/main.xdv" 1782484672.689 355384 cee2500984d9edb17684d1f168554857 "xelatex"
   (generated)
   "main.pdf"
   "main_out/main.pdf"
   (rewritten before read)
-["xelatex"] 1782395257.74199 "main.tex" "main_out/main.xdv" "main" 1782395266.80878 0
+["xelatex"] 1782484666.47259 "main.tex" "main_out/main.xdv" "main" 1782484675.59387 0
   "./TitlePageInfo.tex" 1782384790 521 f5421f61880e390e9870652165709512 ""
   "/etc/texmf/web2c/texmf.cnf" 1782385062.79359 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -249,15 +249,15 @@
   "imglib/face_model_lab/yolo_val_labels.jpg" 1782384786 219593 4cc0951a71a20ccdd93da39235bf956c ""
   "imglib/face_model_lab/yolo_val_predictions.jpg" 1782384786 222536 24d85eaf688ec12ec48f32f6cc8b4aa6 ""
   "main.tex" 1782384790 867 c187dfad25516471947232b9eded7218 ""
-  "main_out/main.aux" 1782395263.77458 8488 ab86eb6ef393b58e45749771fe43a33c "xelatex"
-  "main_out/main.bbl" 1782395245.48511 9974 3955ea571b5a28708c03b6616a274fcb "biber main_out/main"
-  "main_out/main.nav" 1782395263.78461 3357 e100a04b554078f5cc13f3e3b07561d9 "xelatex"
-  "main_out/main.out" 1782395263.77658 539 cc9bb6ad2228d23f232609cdb1118408 "xelatex"
-  "main_out/main.run.xml" 1782395263.78461 2345 67deb1b90c61cbf304f4f3d59c73aea6 "xelatex"
-  "main_out/main.toc" 1782395263.78461 171 8c9d46c077b6b415c4804f362bbe9556 "xelatex"
-  "main_out/main.vrb" 1782395261.10726 760 ef8850a6e022283315504100614c4a92 "xelatex"
+  "main_out/main.aux" 1782484672.68052 8831 f7d8c03dade01a6b6587382ffd74b205 "xelatex"
+  "main_out/main.bbl" 1782484594.23263 9974 3955ea571b5a28708c03b6616a274fcb "biber main_out/main"
+  "main_out/main.nav" 1782484672.689 3543 e13a0236287e50d9d6a25f0cb3772f0e "xelatex"
+  "main_out/main.out" 1782484672.68452 539 cc9bb6ad2228d23f232609cdb1118408 "xelatex"
+  "main_out/main.run.xml" 1782484672.689 2345 67deb1b90c61cbf304f4f3d59c73aea6 "xelatex"
+  "main_out/main.toc" 1782484672.689 171 e52c9a870918dcfabc9e36bf18641160 "xelatex"
+  "main_out/main.vrb" 1782484669.74221 760 ef8850a6e022283315504100614c4a92 "xelatex"
   "slides//citations/citations.tex" 1782384788 109 6e53b68e49f49465cc2a7d1682d2c820 ""
-  "slides/FaceModelLab.tex" 1782394322.11212 1278 ec51669f08711343e8877d4f1149bf97 ""
+  "slides/FaceModelLab.tex" 1782484575.74651 1411 9963872d99e30078fff80178e6c9dde3 ""
   "slides/face_model_lab/01_titel_und_problem.tex" 1782393528.45389 582 c7e5e3324fd9c644452a71acb7e98664 ""
   "slides/face_model_lab/02_projektziel.tex" 1782393528.6749 604 629b5554ebad7ed14a47da813386ef0e ""
   "slides/face_model_lab/03_projektstruktur.tex" 1782395232.31708 783 d42f9cad5749545bf1199566a16df42b ""
@@ -265,14 +265,17 @@
   "slides/face_model_lab/05_detection_grundlagen.tex" 1782393529.33991 648 b481739bdc27307ac840c7139fee87b0 ""
   "slides/face_model_lab/06_uebergang_zu_den_modellen.tex" 1782393529.56792 647 ae079df48b5b31d57b6474c14e62de9f ""
   "slides/face_model_lab/07_warum_mehrere_modelle.tex" 1782394996.8975 870 5f7281864a96cda75203fc0d0683d0c5 ""
-  "slides/face_model_lab/08_wie_funktionieren_die_modelle.tex" 1782394997.1825 1868 62a80f59be87ce723881186d9de879c9 ""
-  "slides/face_model_lab/08b_faster_rcnn_ablauf.tex" 1782395121.05934 963 23f26543053d9f670e58f0dad05ccecf ""
+  "slides/face_model_lab/08_wie_funktionieren_die_modelle.tex" 1782484574.67552 753 d42f37da831ef0045686977ee59c03cd ""
+  "slides/face_model_lab/08a_faster_rcnn.tex" 1782484574.89052 691 6fda17809ca2de892c6729960a795842 ""
+  "slides/face_model_lab/08b_retinanet.tex" 1782484575.09452 648 51a1c835db780ca71a2c6d20843161a6 ""
+  "slides/face_model_lab/08c_fcos.tex" 1782484575.31252 601 8e7742d3dfc9e9ee65b9848de6637548 ""
+  "slides/face_model_lab/08d_yolov8m.tex" 1782484575.52851 648 88edcc4682226ffd4ecc43293ccf561c ""
   "slides/face_model_lab/09_training_und_ressourcen.tex" 1782393945.3684 1072 a7fead8db463d08df434de396289d0f2 ""
   "slides/face_model_lab/10_evaluation_und_metriken.tex" 1782393530.43294 824 066064f856b3000a3d2cb24956a80431 ""
   "slides/face_model_lab/11_vergleich_aller_modelle.tex" 1782393530.64495 1097 1172c395374364ec6c4646c72fc0f2a6 ""
   "slides/face_model_lab/12_vergleichsgrafiken_und_thresholds.tex" 1782394000.1706 1050 895d777710e14385a7a7aa2348a7152c ""
-  "slides/face_model_lab/13_bestes_modell_und_uebergabe.tex" 1782393531.07596 878 17964c871891b949ab616d29ebf5f0f6 ""
-  "slides/face_model_lab/14_video_pipeline.tex" 1782393531.28396 750 cf44ae37119d9cc4dd525fdcba71693b ""
+  "slides/face_model_lab/13_bestes_modell_und_uebergabe.tex" 1782484612.13614 989 28ab5d13d1bc95170545d5acc2ada0e7 ""
+  "slides/face_model_lab/14_video_pipeline.tex" 1782484661.74563 762 13e84b33f29b9ef96d577f3bc4541544 ""
   "slides/face_model_lab/15_selektives_blurring.tex" 1782393531.49997 610 dac0c40dc498a4555eac596c7a9d3c1e ""
   "slides/face_model_lab/16_ergebnisvideo_und_blur_qualitaet.tex" 1782393531.70898 578 dca179e479bf91b40dac4fcdbb268d9c ""
   "slides/face_model_lab/17_fazit.tex" 1782394043.61311 884 b13882f37b17a4fbb2b1e294681ef01e ""

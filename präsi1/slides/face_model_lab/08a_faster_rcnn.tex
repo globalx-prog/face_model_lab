@@ -1,0 +1,26 @@
+\begin{frame}{Faster R-CNN}
+\small
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.46\textwidth}
+\begin{enumerate}
+    \item Backbone extrahiert Merkmale.
+    \item RPN schlägt Face-Regionen vor.
+    \item ROI Head prüft Kandidaten.
+    \item Boxen werden verfeinert.
+\end{enumerate}
+\end{column}
+\begin{column}{0.50\textwidth}
+\begin{itemize}
+    \item Two-Stage-Referenzmodell.
+    \item Gut für robuste Lokalisierung.
+    \item Mehr Rechenaufwand pro Bild.
+    \item Im Projekt solide, aber nicht Favorit.
+\end{itemize}
+\end{column}
+\end{columns}
+\vspace{0.5em}
+\begin{mynote}[Kernidee]
+\small
+Erst mögliche Gesichter suchen, danach genauer klassifizieren.
+\end{mynote}
+\end{frame}

@@ -2375,7 +2375,6 @@
     <bcf:citekey order="27" intorder="1">Lin2017FocalLoss</bcf:citekey>
     <bcf:citekey order="28" intorder="1">Tian2019FCOS</bcf:citekey>
     <bcf:citekey order="29" intorder="1">Yaseen2024YOLOv8</bcf:citekey>
-    <bcf:citekey order="30" intorder="1">Ren2015FasterRCNN</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

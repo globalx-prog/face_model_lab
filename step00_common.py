@@ -92,6 +92,15 @@ def parse_wider_face_gt(gt_file: Path) -> dict[str, list[dict[str, list[float]]]
             break
         cursor += 1
 
+        if face_count == 0 and cursor < len(lines):
+            parts = lines[cursor].strip().split()
+            if len(parts) >= 4:
+                try:
+                    [float(value) for value in parts[:4]]
+                    cursor += 1
+                except ValueError:
+                    pass
+
         faces = []
         for _ in range(face_count):
             if cursor >= len(lines):

@@ -41,11 +41,26 @@ Kombiniert Precision und Recall zu einem Wert. Nützlich, wenn ein ausgewogener 
 **mAP50**  
 Mean Average Precision bei IoU-Schwelle `0,5`. Häufige Object-Detection-Metrik; für Datenschutz allein aber weniger anschaulich als Recall.
 
+**mAP50-95**  
+Mean Average Precision über mehrere IoU-Schwellen von `0,5` bis `0,95`. Diese Metrik ist strenger als mAP50, weil sie auch sehr genaue Box-Lokalisierung stärker bewertet.
+
+**Treffer**  
+Absolute Anzahl der korrekt erkannten Gesichter. Eine Vorhersage zählt als Treffer, wenn sie den Confidence-Threshold überschreitet und ausreichend mit einer Ground-Truth-Box überlappt. Die Zahl ist hilfreich, weil sie neben Recall auch die Größenordnung sichtbar macht.
+
 **ms/Bild**  
 Inferenzzeit pro Bild. Diese Metrik entscheidet, ob ein Modell für Videoverarbeitung praktikabel ist.
 
 **Latenz**  
 Zeit, die ein Modell für eine Vorhersage braucht. Bei Videos addiert sich diese Zeit über sehr viele Frames.
+
+**Trainingszeit**  
+Zeit, die ein Modell für den Trainingslauf benötigt. Sie ist nicht dasselbe wie Latenz: Ein Modell kann lange trainieren, aber später schnell inferieren, oder umgekehrt.
+
+**Modellgröße**  
+Speichergröße der trainierten Gewichte. Für lokale Nutzung und Weitergabe ist das relevant, weil große Modelle mehr Speicher benötigen und schwieriger zu verteilen sind.
+
+**Run-Artefakte**  
+Dateien, die während Training oder Evaluation entstehen. Bei YOLO gehören dazu zum Beispiel `results.csv`, `results.png`, Confusion Matrix, Precision-Recall-Kurven und Recall-Kurven. Diese Artefakte helfen, das Training nachzuvollziehen und Schwächen sichtbar zu machen.
 
 **WIDER FACE**  
 Datensatz für Face Detection mit vielen schwierigen Situationen: kleine Gesichter, verdeckte Gesichter, Gruppen, unterschiedliche Beleuchtung und Perspektiven.
@@ -55,6 +70,15 @@ Vergleich mit Modellen, die auf dem allgemeinen COCO-Datensatz vortrainiert sind
 
 **Face-Finetuning**  
 Nachtraining eines Modells auf Gesichtsdaten. Dadurch lernt das Modell die Zielklasse und die typischen Größen/Positionen von Gesichtern besser.
+
+**Kandidatenlauf**  
+Gezielter Vergleich der vielversprechendsten Modelle nach einem breiteren Vorabtest. In der Präsentation werden nach dem Red20-Smoke-Test vor allem YOLOv8m und FCOS im Red6/10-Lauf weiter verglichen.
+
+**Qualitätsfavorit**  
+Modell, das bei der Erkennungsqualität am stärksten ist. In dieser Präsentation ist FCOS der Qualitätsfavorit, weil es im gezeigten Vergleich den höchsten Recall erreicht.
+
+**Praxisfavorit**  
+Modell, das sich besonders gut für die praktische Pipeline eignet. In dieser Präsentation ist YOLOv8m der Praxisfavorit, weil es schneller ist, direkt nutzbare Artefakte liefert und einfacher in die Video-Anonymisierung eingebunden werden kann.
 
 ## Was heißt Red20?
 
@@ -67,6 +91,12 @@ Nachtraining eines Modells auf Gesichtsdaten. Dadurch lernt das Modell die Zielk
 ## Was heißt Smoke-Test?
 
 Ein Smoke-Test ist ein kurzer Prüflauf. Er soll zeigen, ob die Pipeline grundsätzlich funktioniert und welche Modelle grob vielversprechend sind. Er ersetzt keine finale Evaluation.
+
+## Was heißt Threshold-Sweep?
+
+Ein Threshold-Sweep testet mehrere Confidence-Grenzwerte, zum Beispiel `0,25`, `0,50` und `0,70`. Dadurch sieht man, wie sich Precision, Recall und F1 verändern. Für Datenschutz ist diese Kurve wichtig, weil ein höherer Threshold zwar Fehlalarme reduziert, aber auch mehr Gesichter übersehen kann.
+
+Im gezeigten FCOS-Red6/10-Vergleich steigt die Precision bei höheren Thresholds, während der Recall sinkt. Das ist typisch: Das Modell wird vorsichtiger und akzeptiert weniger Boxen. Für Video-Anonymisierung ist ein niedrigerer Threshold oft plausibel, solange die zusätzlichen Blur-Boxen akzeptabel bleiben.
 
 ## Modellfamilien
 
@@ -81,6 +111,52 @@ Anchor-free One-Stage-Detector. Statt vordefinierter Anchor-Boxen sagt das Model
 
 **YOLOv8m**  
 Praxisorientierter One-Stage-Detector. YOLO ist auf schnelle Inferenz und einfache Nutzung ausgelegt. Vorteil im Projekt: gute Video-Pipeline-Anbindung und viele direkt nutzbare Run-Artefakte.
+
+## Modellbausteine
+
+**Backbone**  
+Teil des Modells, der aus dem Eingabebild visuelle Merkmale extrahiert. Statt mit Rohpixeln weiterzuarbeiten, erzeugt das Backbone Feature Maps mit abstrakteren Informationen wie Kanten, Formen, Texturen und Objektteilen.
+
+**Feature Maps**  
+Zwischenrepräsentationen eines neuronalen Netzes. Sie enthalten räumliche Informationen darüber, wo bestimmte visuelle Muster liegen. Object-Detectoren nutzen Feature Maps, um Objekte in unterschiedlichen Größen zu finden.
+
+**Detection Head**  
+Teil des Modells, der aus Feature Maps konkrete Vorhersagen macht: Bounding Boxes, Confidence-Werte und Klassen. Bei diesem Projekt ist die Zielklasse im Kern nur "Gesicht".
+
+**Region Proposal Network (RPN)**  
+Baustein von Faster R-CNN. Das RPN schlägt mögliche Objektregionen vor. Diese Regionen sind noch nicht die finale Entscheidung, sondern Kandidaten, die anschließend genauer geprüft werden.
+
+**ROI Head**  
+Zweiter Prüfteil bei Faster R-CNN. Der ROI Head nimmt die vorgeschlagenen Regionen, klassifiziert sie und verfeinert die Bounding Boxes. Dadurch entsteht der zweistufige Ablauf: erst Kandidatensuche, dann Detailprüfung.
+
+**Anchor-Boxen**  
+Vordefinierte Boxformen, die als Startpunkte für Vorhersagen dienen. Das Modell passt diese Boxen an tatsächliche Objekte an. Anchor-basierte Modelle müssen dadurch gut zur Objektgröße im Datensatz passen.
+
+**Anchor-free**  
+Detektionsansatz ohne vordefinierte Anchor-Boxen. FCOS sagt direkt von Feature-Map-Positionen aus voraus, ob dort ein Objekt liegt und wie groß die Box ist.
+
+**Focal Loss**  
+Loss-Funktion, die schwierige Beispiele stärker gewichtet. RetinaNet nutzt Focal Loss, um das Ungleichgewicht zwischen sehr vielen Hintergrundbereichen und wenigen echten Objekten besser zu behandeln.
+
+**Non-Maximum Suppression (NMS)**  
+Nachverarbeitungsschritt, der doppelte oder stark überlappende Boxen entfernt. Übrig bleibt typischerweise die Box mit dem höchsten Confidence-Wert.
+
+## YOLO-Artefakte in der Präsentation
+
+**`results.csv`**  
+Tabellarischer Trainingsverlauf. Darin stehen pro Epoche Werte wie Loss, Precision, Recall und mAP-Metriken. Diese Datei ist die beste Grundlage, wenn Trainingskurven neu gezeichnet werden sollen.
+
+**`results.png`**  
+YOLO-Zusammenfassung der Trainingskurven. Sie zeigt auf einen Blick, wie sich Loss und Metriken über die Epochen entwickeln.
+
+**Confusion Matrix**  
+Darstellung von richtigen und falschen Klassifikationen. Bei einem Face-Detector mit nur einer Zielklasse ist sie weniger komplex als bei COCO, kann aber trotzdem Fehlalarme und verpasste Erkennungen sichtbar machen.
+
+**Precision-Recall-Kurve**  
+Kurve, die zeigt, wie Precision und Recall abhängig vom gewählten Grenzwert zusammenhängen. Sie hilft bei der Entscheidung, ob man eher konservativ oder recall-stark arbeiten möchte.
+
+**BoxF1-, BoxP- und BoxR-Kurven**  
+YOLO-Kurven für F1, Precision und Recall bezogen auf Bounding-Box-Vorhersagen. Sie zeigen, wie sich die Box-Qualität und die Threshold-Wahl auswirken.
 
 ## Größerer Abschnitt: Wie funktionieren die Modelle?
 
