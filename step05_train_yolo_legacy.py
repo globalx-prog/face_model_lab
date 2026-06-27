@@ -14,11 +14,10 @@ from pathlib import Path
 os.environ.setdefault("MPLCONFIGDIR", str(Path(__file__).resolve().parents[1] / "matplotlib_cache"))
 
 import cv2
-import torch
 from tqdm.auto import tqdm
 from ultralytics import YOLO
 
-from step00_common import MODEL_DIR, ROOT, YOLO_DATASET_DIR, ensure_dirs, model_name, parse_wider_face_gt, vram_status, wider_paths
+from step00_common import MODEL_DIR, ROOT, YOLO_DATASET_DIR, ensure_dirs, model_name, parse_wider_face_gt, ultralytics_device, vram_status, wider_paths
 
 
 KNOWN_ULTRALYTICS_STEMS = {
@@ -140,6 +139,8 @@ def main() -> None:
     output = MODEL_DIR / model_name(run_type, args.batch, args.epochs, "pt", args.reduction)
 
     print("VRAM before training:", vram_status())
+    device = ultralytics_device()
+    print(f"Training device: {device}")
 
     def vram_callback(trainer):
         batch_i = getattr(trainer, "batch_i", 0)
@@ -153,7 +154,7 @@ def main() -> None:
         epochs=args.epochs,
         batch=args.batch,
         imgsz=args.imgsz,
-        device=0 if torch.cuda.is_available() else "cpu",
+        device=device,
         project=str(MODEL_DIR / "yolo_runs"),
         name=run_name,
         exist_ok=True,

@@ -36,20 +36,40 @@ def ensure_dirs() -> None:
         directory.mkdir(parents=True, exist_ok=True)
 
 
-def rocm_device(require_gpu: bool = True) -> torch.device:
+def rocm_device(require_gpu: bool = False) -> torch.device:
+    """Waehlt die beste verfuegbare PyTorch-Hardware.
+
+    Der Name bleibt aus Kompatibilitaet zu den bestehenden Skripten erhalten.
+    `cuda` bedeutet bei PyTorch sowohl NVIDIA CUDA als auch AMD ROCm. Falls
+    keine solche GPU sichtbar ist, wird auf Apple MPS und danach CPU
+    zurueckgefallen. Mit `require_gpu=True` kann man GPU-Pflicht erzwingen.
+    """
     if torch.cuda.is_available():
-        print(f"Using ROCm device: {torch.cuda.get_device_name(0)}")
+        print(f"Using CUDA/ROCm device: {torch.cuda.get_device_name(0)}")
         return torch.device("cuda")
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        print("Using Apple MPS device.")
+        return torch.device("mps")
     if require_gpu:
-        raise RuntimeError("ROCm GPU is not visible to PyTorch. Run outside sandbox and check /dev/kfd.")
-    print("ROCm GPU not visible; falling back to CPU.")
+        raise RuntimeError("No CUDA/ROCm or MPS GPU is visible to PyTorch.")
+    print("No CUDA/ROCm or MPS GPU visible; falling back to CPU.")
     return torch.device("cpu")
+
+
+def ultralytics_device(require_gpu: bool = False) -> int | str:
+    """Geraeteauswahl im Format, das Ultralytics `model.train()` erwartet."""
+    device = rocm_device(require_gpu)
+    if device.type == "cuda":
+        return 0
+    if device.type == "mps":
+        return "mps"
+    return "cpu"
 
 
 def vram_status(device: torch.device | str | None = None) -> dict[str, str]:
     device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
     if device.type != "cuda":
-        return {"vram": "cpu"}
+        return {"device": device.type}
 
     allocated = torch.cuda.memory_allocated(device) / 1024**3
     reserved = torch.cuda.memory_reserved(device) / 1024**3

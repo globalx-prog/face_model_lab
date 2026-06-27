@@ -49,7 +49,7 @@ def main() -> None:
     args = parser.parse_args()
 
     ensure_dirs()
-    device = rocm_device(require_gpu=True)
+    device = rocm_device(require_gpu=False)
     train_images, train_gt = wider_paths("train")
     ann_file = ANNOTATIONS_DIR / "instances_train.json"
     if not ann_file.exists():

@@ -36,6 +36,7 @@ from step00_common import (
     ensure_dirs,
     parse_wider_face_gt,
     timestamp,
+    ultralytics_device,
     wider_paths,
     write_results_csv,
     write_results_json,
@@ -190,12 +191,13 @@ def evaluate_yolo(model_path: Path, samples, image_dir: Path, iou: float, conf: 
 def evaluate_ultralytics_model(model, label: str, samples, image_dir: Path, iou: float, conf: float, imgsz: int) -> EvalResult:
     detected = 0
     true_faces = 0
+    device = ultralytics_device()
     t0 = time.perf_counter()
     for rel_path, faces in tqdm(samples, desc=f"eval {label}"):
         image = cv2.imread(str(image_dir / rel_path))
         if image is None:
             continue
-        result = model(image, verbose=False, conf=conf, imgsz=imgsz, device=0 if torch.cuda.is_available() else "cpu")[0]
+        result = model(image, verbose=False, conf=conf, imgsz=imgsz, device=device)[0]
         pred_boxes = result.boxes.xyxy.cpu().numpy() if result.boxes is not None else np.empty((0, 4))
         detected += count_matches(faces, pred_boxes, iou)
         true_faces += len(faces)

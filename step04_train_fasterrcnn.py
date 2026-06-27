@@ -1,4 +1,13 @@
 # Trainiert Faster R-CNN auf WIDER FACE.
+#
+# Was beim Ausfuehren passiert:
+# 1. Pfade und Ausgabeordner werden vorbereitet.
+# 2. Die beste verfuegbare Hardware wird gewaehlt: CUDA/ROCm, Apple MPS, sonst CPU.
+# 3. WIDER-FACE-Annotationen werden bei Bedarf in COCO-JSON umgewandelt.
+# 4. Der Trainingsdatensatz wird geladen und optional mit --reduction verkleinert.
+# 5. Ein COCO-vortrainiertes Faster R-CNN wird auf die Klasse "face" umgebaut.
+# 6. Das Modell wird trainiert, Checkpoints und Trainingshistorie werden gespeichert.
+#
 # Wichtige Parameter: --epochs, --batch, --reduction, --lr, --workers,
 # --save-every. Speichert .pth-Checkpoints in trained_models/.
 # Namensschema: fasterrcnn_resnet50_fpn_rocm_bs<batch>_red<reduction>_ep<epochs>.pth.
@@ -20,19 +29,29 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from tqdm.auto import tqdm
 
-from step00_common import ANNOTATIONS_DIR, DATASET_DIR, MODEL_DIR, RESULTS_DIR, ensure_dirs, model_name, rocm_device, timestamp, vram_status, wider_paths
+from step00_common import ANNOTATIONS_DIR, MODEL_DIR, RESULTS_DIR, ensure_dirs, model_name, rocm_device, timestamp, vram_status, wider_paths
 
 
 class CocoFaceDataset(Dataset):
+    """PyTorch-Dataset, das COCO-Annotationen und WIDER-FACE-Bilder zusammenfuehrt.
+
+    Faster R-CNN erwartet pro Bild einen Tensor und ein Target-Dictionary mit
+    Bounding Boxes im Format [x1, y1, x2, y2]. Diese Klasse liest die Bilder mit
+    OpenCV, normalisiert Pixel auf 0..1 und baut genau dieses Target-Format.
+    """
+
     def __init__(self, images_dir: Path, ann_file: Path):
+        """Laedt die COCO-JSON und merkt sich alle Bild-IDs."""
         self.images_dir = images_dir
         self.coco = COCO(str(ann_file))
         self.image_ids = list(self.coco.imgs.keys())
 
     def __len__(self) -> int:
+        """Gibt die Anzahl der Bilder im Dataset zurueck."""
         return len(self.image_ids)
 
     def __getitem__(self, idx: int):
+        """Laedt ein Bild und die zugehoerigen Gesichtsboxen fuer einen Index."""
         image_id = self.image_ids[idx]
         img_info = self.coco.loadImgs(image_id)[0]
         ann_ids = self.coco.getAnnIds(imgIds=image_id)
@@ -66,10 +85,20 @@ class CocoFaceDataset(Dataset):
 
 
 def collate_fn(batch):
+    """Baut variable Detection-Batches fuer Torchvision.
+
+    Detection-Modelle haben pro Bild unterschiedlich viele Boxen. Deshalb kann
+    der Standard-Collate von PyTorch die Targets nicht sinnvoll stapeln.
+    """
     return tuple(zip(*batch))
 
 
 def build_model(num_classes: int = 2):
+    """Erstellt Faster R-CNN und ersetzt den Klassifikationskopf.
+
+    `weights="DEFAULT"` nutzt ein COCO-vortrainiertes Modell. Der letzte Head
+    wird danach auf zwei Klassen angepasst: Hintergrund und Gesicht.
+    """
     model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT")
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
@@ -77,6 +106,7 @@ def build_model(num_classes: int = 2):
 
 
 def write_history(path: Path, rows: list[dict]) -> None:
+    """Schreibt die Trainingshistorie als CSV, damit Laeufe vergleichbar bleiben."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=["model", "epoch", "mean_loss", "lr", "batch", "reduction", "images", "checkpoint"])
@@ -85,6 +115,12 @@ def write_history(path: Path, rows: list[dict]) -> None:
 
 
 def convert_wider_to_coco(gt_file: Path, output_json: Path) -> None:
+    """Konvertiert WIDER-FACE-Textannotation in ein minimales COCO-JSON.
+
+    Torchvision selbst braucht kein COCO-JSON, aber `pycocotools.COCO` macht das
+    spaetere Laden der Annotationen robust und einheitlich. WIDER FACE enthaelt
+    bei Bildern ohne Gesichter eine Dummy-Zeile; diese wird hier uebersprungen.
+    """
     lines = gt_file.read_text(encoding="utf-8", errors="replace").splitlines()
     data = {"images": [], "annotations": [], "categories": [{"id": 1, "name": "face"}]}
     cursor = 0
@@ -98,6 +134,14 @@ def convert_wider_to_coco(gt_file: Path, output_json: Path) -> None:
         face_count = int(lines[cursor].strip())
         cursor += 1
         data["images"].append({"id": image_id, "file_name": rel_path})
+        if face_count == 0 and cursor < len(lines):
+            parts = lines[cursor].strip().split()
+            if len(parts) >= 4:
+                try:
+                    [float(value) for value in parts[:4]]
+                    cursor += 1
+                except ValueError:
+                    pass
         for _ in range(face_count):
             parts = lines[cursor].strip().split()
             cursor += 1
@@ -121,33 +165,43 @@ def convert_wider_to_coco(gt_file: Path, output_json: Path) -> None:
 
 
 def main() -> None:
+    """Parst CLI-Argumente und fuehrt den kompletten Trainingslauf aus."""
     parser = argparse.ArgumentParser(description="Train Faster R-CNN face detector on WIDER FACE.")
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--batch", type=int, default=2)
     parser.add_argument("--reduction", type=int, default=10)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--workers", type=int, default=2)
-    parser.add_argument("--require-gpu", action="store_true", default=True)
+    parser.add_argument("--require-gpu", action="store_true", help="Fail instead of falling back to CPU if no GPU is visible.")
     parser.add_argument("--save-every", type=int, default=1, help="Save an epoch checkpoint every N epochs. Use 0 to disable.")
     args = parser.parse_args()
 
+    # Ausgabeordner anlegen und automatisch die passende Hardware auswaehlen.
     ensure_dirs()
     device = rocm_device(args.require_gpu)
+
+    # WIDER FACE liegt als Textdatei vor. Fuer dieses Training wird daraus beim
+    # ersten Lauf eine wiederverwendbare COCO-JSON-Datei erzeugt.
     train_images, train_gt = wider_paths("train")
     ann_file = ANNOTATIONS_DIR / "instances_train.json"
     if not ann_file.exists():
         convert_wider_to_coco(train_gt, ann_file)
 
+    # --reduction ist der wichtigste Hebel fuer schnelle Testlaeufe:
+    # reduction=10 nimmt jedes zehnte Bild, reduction=1 nimmt alle Bilder.
     dataset = CocoFaceDataset(train_images, ann_file)
     if args.reduction > 1:
         dataset = torch.utils.data.Subset(dataset, list(range(0, len(dataset), args.reduction)))
     loader = DataLoader(dataset, batch_size=args.batch, shuffle=True, num_workers=args.workers, collate_fn=collate_fn)
     image_count = len(dataset)
 
+    # Modell, Optimizer und Lernratenplan vorbereiten.
     model = build_model().to(device)
     optimizer = torch.optim.SGD([p for p in model.parameters() if p.requires_grad], lr=args.lr, momentum=0.9, weight_decay=5e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(args.epochs, 1))
 
+    # Trainingsschleife: Forward Pass liefert Losses, Backward Pass aktualisiert
+    # die Modellgewichte. tqdm zeigt Fortschritt, Loss und Speichernutzung.
     model.train()
     history = []
     history_path = RESULTS_DIR / f"training_history_fasterrcnn_resnet50_fpn_rocm_bs{args.batch}_red{args.reduction}_ep{args.epochs}_{timestamp()}.csv"
@@ -169,6 +223,7 @@ def main() -> None:
         checkpoint = ""
         print(f"epoch={epoch + 1} mean_loss={mean_loss:.4f}")
         if args.save_every and (epoch + 1) % args.save_every == 0:
+            # Zwischenspeichern pro Epoche schuetzt lange Laeufe vor Datenverlust.
             checkpoint_path = MODEL_DIR / model_name("fasterrcnn_resnet50_fpn_rocm", args.batch, epoch + 1, "pth", args.reduction)
             torch.save(model.state_dict(), checkpoint_path)
             checkpoint = str(checkpoint_path)
@@ -186,6 +241,7 @@ def main() -> None:
         write_history(history_path, history)
         print(f"history updated {history_path}")
 
+    # Finaler Checkpoint mit dem Namensschema des gesamten Laufs.
     output = MODEL_DIR / model_name("fasterrcnn_resnet50_fpn_rocm", args.batch, args.epochs, "pth", args.reduction)
     torch.save(model.state_dict(), output)
     print(f"saved {output}")
