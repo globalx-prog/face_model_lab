@@ -21,23 +21,21 @@ RetinaNet red20 ep1 & 3.443 & 1.125 & 0,327 & 35,0 & faellt wegen Recall ab \\
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Finaler Vergleich: Red6/10 auf gleicher Datenbasis}
+\begin{frame}{Finaler Vergleich: Gewinner plus neuer RCNN-Lauf}
 \tiny
 \begin{tabularx}{\textwidth}{l r r r r X}
 \toprule
 Modell & GT-Faces & Treffer & Recall & ms/Bild & Interpretation \\
 \midrule
-FCOS red6 ep10 & 5.015 & 3.375 & 0,673 & 55,7 & bester Recall bisher \\
-YOLOv8m red6 ep10 & 5.015 & 2.445 & 0,488 & 31,2 & schnellster Pipeline-Kandidat \\
-Faster R-CNN red6 ep10 & -- & -- & -- & -- & Training/Evaluation laeuft \\
-COCO FCOS & 5.015 & 224 & 0,045 & 44,6 & nicht face-finetuned \\
-COCO YOLOv8m & 5.015 & 46 & 0,009 & 17,3 & nicht face-finetuned \\
+FCOS ResNet50-FPN red6 ep10 & 5.015 & 3.375 & 0,673 & 34,9 & bester Recall \\
+YOLOv8m red6 ep10 & 5.015 & 2.283 & 0,455 & 14,6 & schnellster Pipeline-Kandidat \\
+Faster R-CNN MobileNetV3-FPN red20 ep1 & 5.015 & 1.829 & 0,365 & 620,6 & kuehler, aber schwach und langsam \\
 \bottomrule
 \end{tabularx}
 \vspace{0.4em}
 \begin{itemize}
-    \item Zweiter Block: nur die final relevanten Kandidaten auf gleicher Red6/10-Basis.
-    \item COCO-Baselines bleiben Kontrollgruppe und werden nicht als trainierte Kandidaten gewertet.
-    \item Faster-R-CNN-Werte ersetzen den Platzhalter nach Abschluss des neuen Laufs.
+    \item Evaluation: 500 Validierungsbilder, 5.015 Ground-Truth-Gesichter, IoU 0,4, Confidence 0,25.
+    \item Der neue RCNN-Lauf nutzt \textbf{MobileNetV3-Large-FPN} als Backbone, nicht ResNet50-FPN.
+    \item Der 8h/105\,\textdegree C-Guard war machbar; die eigentliche Grenze bleibt die geringe RCNN-Effizienz.
 \end{itemize}
 \end{frame}

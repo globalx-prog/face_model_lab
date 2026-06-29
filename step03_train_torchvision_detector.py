@@ -1,5 +1,5 @@
 # Trainiert Torchvision-Detektoren auf WIDER FACE.
-# Wichtige Parameter: --kind fasterrcnn|retinanet|fcos, --epochs, --batch,
+# Wichtige Parameter: --kind fasterrcnn|fasterrcnn_mobile|retinanet|fcos, --epochs, --batch,
 # --reduction, --lr, --workers, --save-every, --amp, --min-size, --max-size.
 # Speichert als <modelltyp>_bs<batch>_red<reduction>_ep<epochs>.pth.
 # Beispiel:
@@ -16,18 +16,20 @@ from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
 from step00_common import ANNOTATIONS_DIR, MODEL_DIR, RESULTS_DIR, ensure_dirs, model_name, rocm_device, timestamp, vram_status, wider_paths
-from step06_evaluate_models import build_fcos, build_fasterrcnn, build_retinanet
+from step06_evaluate_models import build_fasterrcnn, build_fasterrcnn_mobile, build_fcos, build_retinanet
 from step04_train_fasterrcnn import CocoFaceDataset, collate_fn, convert_wider_to_coco
 
 
 def build_model(kind: str, min_size: int | None = None, max_size: int | None = None):
     if kind == "fasterrcnn":
         return build_fasterrcnn(min_size=min_size, max_size=max_size)
+    if kind == "fasterrcnn_mobile":
+        return build_fasterrcnn_mobile(min_size=min_size, max_size=max_size)
     if kind == "retinanet":
         return build_retinanet(min_size=min_size, max_size=max_size)
     if kind == "fcos":
         return build_fcos(min_size=min_size, max_size=max_size)
-    raise ValueError("--kind must be fasterrcnn, retinanet, or fcos")
+    raise ValueError("--kind must be fasterrcnn, fasterrcnn_mobile, retinanet, or fcos")
 
 
 def write_history(path, rows: list[dict]) -> None:
@@ -40,7 +42,7 @@ def write_history(path, rows: list[dict]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Train Torchvision detector families on WIDER FACE.")
-    parser.add_argument("--kind", choices=["fasterrcnn", "retinanet", "fcos"], default="retinanet")
+    parser.add_argument("--kind", choices=["fasterrcnn", "fasterrcnn_mobile", "retinanet", "fcos"], default="retinanet")
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--batch", type=int, default=2)
     parser.add_argument("--reduction", type=int, default=10)
@@ -98,7 +100,8 @@ def main() -> None:
 
     model.train()
     history = []
-    history_path = RESULTS_DIR / f"training_history_{args.kind}_resnet50_fpn_rocm_bs{args.batch}_red{args.reduction}_ep{args.epochs}_{timestamp()}.csv"
+    model_label = f"{args.kind}_resnet50_fpn_rocm" if args.kind != "fasterrcnn_mobile" else "fasterrcnn_mobile_fpn_rocm"
+    history_path = RESULTS_DIR / f"training_history_{model_label}_bs{args.batch}_red{args.reduction}_ep{args.epochs}_{timestamp()}.csv"
     for epoch in range(args.epochs):
         total_loss = 0.0
         epoch_t0 = time.perf_counter()
@@ -123,12 +126,12 @@ def main() -> None:
         checkpoint = ""
         print(f"epoch={epoch + 1} mean_loss={mean_loss:.4f} seconds={epoch_seconds:.1f} sec_per_batch={epoch_seconds / len(loader):.3f}")
         if args.save_every and (epoch + 1) % args.save_every == 0:
-            checkpoint_path = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, epoch + 1, "pth", args.reduction)
+            checkpoint_path = MODEL_DIR / model_name(model_label, args.batch, epoch + 1, "pth", args.reduction)
             torch.save(model.state_dict(), checkpoint_path)
             checkpoint = str(checkpoint_path)
             print(f"checkpoint saved {checkpoint_path}")
         history.append({
-            "model": f"{args.kind}_resnet50_fpn_rocm",
+            "model": model_label,
             "epoch": epoch + 1,
             "mean_loss": mean_loss,
             "lr": optimizer.param_groups[0]["lr"],
@@ -140,7 +143,7 @@ def main() -> None:
         write_history(history_path, history)
         print(f"history updated {history_path}")
 
-    output = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, args.epochs, "pth", args.reduction)
+    output = MODEL_DIR / model_name(model_label, args.batch, args.epochs, "pth", args.reduction)
     torch.save(model.state_dict(), output)
     print(f"saved {output}")
 

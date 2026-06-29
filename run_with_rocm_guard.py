@@ -64,6 +64,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run a command while monitoring ROCm temperatures.")
     parser.add_argument("--max-junction", type=float, default=95.0, help="Terminate the process at or above this junction temperature.")
     parser.add_argument("--max-edge", type=float, default=90.0, help="Terminate the process at or above this edge temperature.")
+    parser.add_argument("--max-seconds", type=float, default=0.0, help="Terminate the process after this many seconds. Use 0 to disable.")
     parser.add_argument("--interval", type=float, default=10.0, help="Seconds between ROCm readings.")
     parser.add_argument("--log", type=Path, required=True, help="CSV file for temperature and utilization readings.")
     parser.add_argument("command", nargs=argparse.REMAINDER, help="Command to run after --.")
@@ -84,6 +85,14 @@ def main() -> int:
         while process.poll() is None:
             metrics = read_rocm_metrics()
             elapsed = time.time() - start
+            if args.max_seconds > 0 and elapsed >= args.max_seconds:
+                print("rocm_guard time limit reached; terminating training.", flush=True)
+                process.terminate()
+                try:
+                    process.wait(timeout=30)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                return 76
             if metrics:
                 for key in max_seen:
                     max_seen[key] = max(max_seen[key], metrics.get(key, 0.0))

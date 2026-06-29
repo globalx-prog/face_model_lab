@@ -3,24 +3,35 @@
 \vspace{0.2em}
 \scriptsize
 \begin{itemize}
-    \item Dashboard: Recall, Treffer, Latenz und Baselines; es zeigt die Vorauswahl und wird nach dem Faster-R-CNN-Red6-Lauf als finaler Dreiervergleich aktualisiert.
+    \item Dashboard: Recall, Treffer, Latenz und Baselines; der finale Dreiervergleich nutzt YOLOv8m/FCOS Red6 und den neuen Faster-R-CNN-MobileNetV3-FPN-Lauf.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Recall und Thresholds}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
-\includegraphics[width=\textwidth,height=0.50\textheight,keepaspectratio]{imglib/face_model_lab/red6_validation_recall.png}
+\includegraphics[width=\textwidth,height=0.50\textheight,keepaspectratio]{imglib/face_model_lab/final_20260629_validation_recall.png}
 \end{column}
 \begin{column}{0.49\textwidth}
-\includegraphics[width=\textwidth,height=0.50\textheight,keepaspectratio]{imglib/face_model_lab/red6_threshold_sweep.png}
+\includegraphics[width=\textwidth,height=0.50\textheight,keepaspectratio]{imglib/face_model_lab/final_20260629_threshold_sweep.png}
 \end{column}
 \end{columns}
 \vspace{0.3em}
 \small
 \begin{itemize}
-    \item Höhere Thresholds reduzieren Fehlalarme; gleichzeitig sinkt der Recall.
-    \item Für Datenschutz ist ein niedrigerer Threshold plausibel, weil übersehene Gesichter kritischer sind.
-    \item Der Threshold-Sweep wird fuer FCOS und Faster R-CNN aus den Torchvision-CSV/JSON-Daten vergleichbar dargestellt.
+    \item FCOS bleibt Recall-Sieger; YOLOv8m liegt vor dem neuen Faster-R-CNN-MobileNet-Lauf.
+    \item Der Threshold-Sweep vergleicht FCOS und Faster R-CNN direkt aus den CSV/JSON-Daten.
+    \item RCNN-MobileNet: bei 0,25 nur 0,365 Recall; bei 0,70 steigt Precision auf 0,867, aber Recall faellt auf 0,233.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Latenz im Finalvergleich}
+\includegraphics[width=\textwidth,height=0.47\textheight,keepaspectratio]{imglib/face_model_lab/final_20260629_validation_latency.png}
+\vspace{0.1em}
+\scriptsize
+\begin{itemize}\setlength\itemsep{0.12em}
+    \item YOLOv8m ist in dieser Evaluation der schnellste Pipeline-Kandidat.
+    \item FCOS ist etwas langsamer, liefert aber mit Abstand den besten Recall.
+    \item Faster R-CNN MobileNetV3-FPN ist trotz leichtem Backbone mit 620,6 ms/Bild nicht video-praktisch.
 \end{itemize}
 \end{frame}

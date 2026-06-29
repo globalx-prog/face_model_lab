@@ -7,15 +7,15 @@
 \begin{column}{0.48\textwidth}
 \scriptsize
 \begin{itemize}
-    \item FCOS und YOLOv8m sind die Gewinner der Vorauswahl: Qualität gegen operative Einfachheit.
-    \item Faster R-CNN wird als starker Red20-Kandidat in den großen Red6/10-Vergleich nachgezogen.
-    \item Die finale Entscheidung betrachtet Recall, Validierungsmetriken, Latenz, Modellgröße und Video-Pipeline.
+    \item FCOS ist der Recall-Sieger im finalen Vergleich.
+    \item YOLOv8m bleibt der schnellste und praktischste Kandidat fuer die Video-Pipeline.
+    \item Faster R-CNN MobileNetV3-FPN bleibt kuehl, erreicht aber nur 0,365 Recall und 620,6 ms/Bild.
 \end{itemize}
 \end{column}
 \end{columns}
 \vspace{0.2em}
 \begin{mynote}[Übergabe]
 \scriptsize
-Video-Übergang: erst ungeblurrtes Original, dann dieselbe Szene mit YOLO-Blur und Qualitätsbewertung. So werden Recall, Box-Grösse und Blur-Qualität sichtbar.
+Übergabe: Für maximalen Datenschutz-Recall ist FCOS die stärkste Wahl. YOLOv8m bleibt für die Video-Anonymisierung wichtig, weil Pipeline, Tracking und Blur-Artefakte dort bereits direkt sichtbar sind. Faster R-CNN zeigt trotz MobileNetV3-Backbone die Effizienzgrenze der Two-Stage-Familie.
 \end{mynote}
 \end{frame}

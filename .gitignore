@@ -7,12 +7,17 @@ matplotlib_cache/
 # Runtime outputs and large artifacts should stay outside git.
 model_results/
 runs/
+annotations/
+notebook_runs/
+trained_models/
 *.pt
 *.pth
 *.onnx
 *.mp4
 *.avi
 *.mov
+*-SAVE-ERROR
+missfont.log
 
 
 /home/clemi/projekte/MIM/face_model_lab/praesentation_gliederung.md

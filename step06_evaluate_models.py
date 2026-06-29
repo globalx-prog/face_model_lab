@@ -59,6 +59,11 @@ MODEL_NOTES = {
         "strengths": "Solide Two-Stage-Qualitätsbaseline; gute Lokalisierung und interpretierbares Training.",
         "watch": "Für Video eher langsam und VRAM/CPU-overhead-intensiv.",
     },
+    "fasterrcnn_mobile": {
+        "family": "Faster R-CNN MobileNet-FPN",
+        "strengths": "Two-Stage-RCNN mit leichterem Backbone; sinnvoller Kompromiss, wenn ResNet50 thermisch oder zeitlich zu schwer ist.",
+        "watch": "Geringere Backbone-Kapazitaet als ResNet50; kleine Gesichter koennen bei reduzierter Aufloesung leichter verloren gehen.",
+    },
     "retinanet": {
         "family": "RetinaNet",
         "strengths": "One-Stage-Detector mit Focal Loss; interessant bei vielen einfachen Negativen und kleinen Objekten.",
@@ -111,6 +116,8 @@ def infer_model_kind(model_path: Path) -> str:
     name = model_path.stem.lower()
     if "rtdetr" in name:
         return "rtdetr"
+    if "fasterrcnn_mobile" in name or "mobilenet" in name:
+        return "fasterrcnn_mobile"
     if "retinanet" in name:
         return "retinanet"
     if "fcos" in name:
@@ -133,6 +140,16 @@ def resize_kwargs(min_size: int | None = None, max_size: int | None = None) -> d
 
 def build_fasterrcnn(num_classes: int = 2, min_size: int | None = None, max_size: int | None = None):
     model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT", **resize_kwargs(min_size, max_size))
+    in_features = model.roi_heads.box_predictor.cls_score.in_features
+    model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+    return model
+
+
+def build_fasterrcnn_mobile(num_classes: int = 2, min_size: int | None = None, max_size: int | None = None):
+    model = torchvision.models.detection.fasterrcnn_mobilenet_v3_large_fpn(
+        weights="DEFAULT",
+        **resize_kwargs(min_size, max_size),
+    )
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
     return model
@@ -175,6 +192,8 @@ def build_fcos(num_classes: int = 2, min_size: int | None = None, max_size: int 
 def build_torchvision_model(kind: str):
     if kind == "fasterrcnn":
         return build_fasterrcnn()
+    if kind == "fasterrcnn_mobile":
+        return build_fasterrcnn_mobile()
     if kind == "retinanet":
         return build_retinanet()
     if kind == "fcos":

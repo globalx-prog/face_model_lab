@@ -2,28 +2,28 @@
 \scriptsize
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.48\textwidth}
-\textbf{Anpassbare Hebel}
-\begin{itemize}
-    \item \texttt{--workers}: paralleles Laden und Dekodieren der Bilder.
-    \item \texttt{--batch}: mehr Bilder pro GPU-Step.
-    \item \texttt{--min-size}/\texttt{--max-size}: interne Bildskalierung begrenzen.
-    \item \texttt{--amp}: Mixed Precision auf CUDA/ROCm.
-    \item \texttt{prefetch}, \texttt{pin\_memory}, \texttt{non\_blocking}: weniger Transfer-Overhead.
+\textbf{105-Grad-/8h-Lauf}
+\begin{itemize}\setlength\itemsep{0.08em}
+    \item Guard: max. 105\,\textdegree C Junction/Edge, max. 8 Stunden.
+    \item Backbone: \textbf{MobileNetV3-Large-FPN} statt ResNet50-FPN.
+    \item \texttt{batch=2}, \texttt{256/384}, \texttt{workers=2}.
+    \item Red10/10 waere zu lang: >9 Stunden pro Epoche.
+    \item Ausgefuehrt: Red20/1, 644 Bilder, 322 Batches.
 \end{itemize}
 \end{column}
 \begin{column}{0.48\textwidth}
-\textbf{Beobachtete Grenzen}
-\begin{itemize}
-    \item Batch 4 und AMP waren auf ROCm/Torchvision langsamer bzw. blockierten.
-    \item Batch 2 war stabiler, nutzt die 48 GB VRAM aber nicht voll aus.
-    \item Variable Bildgroessen, RPN und ROI Heads erzeugen viel Overhead.
-    \item Niedrige VRAM-Belegung bedeutet nicht automatisch ungenutzte GPU.
+\textbf{Gemessene Grenzen}
+\begin{itemize}\setlength\itemsep{0.08em}
+    \item ResNet50 ohne Resize: unter 100\,\textdegree C, aber viel zu langsam.
+    \item MobileNet ohne Resize: 100\,\textdegree C Junction, Guard-Abbruch.
+    \item MobileNetV3-FPN Red20/1: 12:56 Minuten, max. 88\,\textdegree C Junction.
+    \item Ergebnis: 0,365 Recall, 620,6 ms/Bild.
 \end{itemize}
 \end{column}
 \end{columns}
-\vspace{0.35em}
+\vspace{0.15em}
 \begin{mynote}[Einordnung]
-\scriptsize
-Das Skript ist funktional korrekt. Die Grenze liegt vor allem in der Two-Stage-Architektur und der Torchvision/ROCm-Kombination. YOLO und FCOS sind als One-Stage-Modelle fuer diesen Projektkontext deutlich effizienter.
+\tiny
+Der 105\,\textdegree C-/8h-Guard war moeglich und wurde nicht ausgereizt. MobileNetV3-FPN macht Training kuehl, verliert aber Validierungsqualitaet und bleibt in der Inferenz langsam.
 \end{mynote}
 \end{frame}
