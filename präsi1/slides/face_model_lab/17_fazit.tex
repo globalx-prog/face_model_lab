@@ -1,10 +1,18 @@
-\begin{frame}{Fazit: Modellqualität}
-\includegraphics[width=\textwidth,height=0.50\textheight,keepaspectratio]{imglib/face_model_lab/red6_validation_recall.png}
+\begin{frame}{Fazit: Training und Validierung}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+\includegraphics[width=\textwidth,height=0.47\textheight,keepaspectratio]{imglib/face_model_lab/final_mean_loss_comparison.png}
+\end{column}
+\begin{column}{0.49\textwidth}
+\includegraphics[width=\textwidth,height=0.47\textheight,keepaspectratio]{imglib/face_model_lab/final_validation_metrics.png}
+\end{column}
+\end{columns}
 \vspace{0.2em}
-\small
+\scriptsize
 \begin{itemize}
-    \item FCOS red6 ep10 erreicht den besten Recall: 0,673 auf 500 Bildern mit 5.015 GT-Faces.
-    \item COCO-Baselines fallen klar ab und bestätigen die Notwendigkeit von Face-Finetuning.
+    \item Links: Mean Loss aus den Trainings-/Results-CSV-Dateien fuer YOLOv8m, FCOS und Faster R-CNN.
+    \item Rechts: Validierungsmetriken aus der Evaluation; Recall bleibt die wichtigste Datenschutzmetrik.
+    \item Faster-R-CNN-Werte werden nach Abschluss des Red6/10-Laufs automatisch in die Diagramme uebernommen.
 \end{itemize}
 \end{frame}
 
@@ -13,7 +21,8 @@
 \vspace{0.2em}
 \small
 \begin{itemize}
-    \item YOLOv8m red6 ep10 erreicht Recall 0,488, ist aber schneller und pipelinefreundlicher.
-    \item Für Datenschutz zählt zuerst Abdeckung; für die praktische Video-Pipeline zählen zusätzlich Geschwindigkeit und Artefakte.
+    \item FCOS ist bisher der Recall-Sieger; YOLOv8m ist schneller und pipelinefreundlicher.
+    \item Faster R-CNN wird im finalen Dreiervergleich als starke Two-Stage-Baseline nachbewertet.
+    \item Fuer Datenschutz zählt zuerst Abdeckung; fuer die praktische Video-Pipeline zählen zusätzlich Geschwindigkeit und Artefakte.
 \end{itemize}
 \end{frame}

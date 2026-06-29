@@ -3,7 +3,7 @@
 \vspace{0.2em}
 \scriptsize
 \begin{itemize}
-    \item Dashboard: Recall, Treffer, Latenz und Baselines; FCOS dominiert beim Recall, YOLOv8m bleibt der praktischere Video-Kandidat.
+    \item Dashboard: Recall, Treffer, Latenz und Baselines; es zeigt die Vorauswahl und wird nach dem Faster-R-CNN-Red6-Lauf als finaler Dreiervergleich aktualisiert.
 \end{itemize}
 \end{frame}
 
@@ -21,5 +21,6 @@
 \begin{itemize}
     \item Höhere Thresholds reduzieren Fehlalarme; gleichzeitig sinkt der Recall.
     \item Für Datenschutz ist ein niedrigerer Threshold plausibel, weil übersehene Gesichter kritischer sind.
+    \item Der Threshold-Sweep wird fuer FCOS und Faster R-CNN aus den Torchvision-CSV/JSON-Daten vergleichbar dargestellt.
 \end{itemize}
 \end{frame}

@@ -122,8 +122,17 @@ def infer_model_kind(model_path: Path) -> str:
     return "fasterrcnn"
 
 
-def build_fasterrcnn(num_classes: int = 2):
-    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT")
+def resize_kwargs(min_size: int | None = None, max_size: int | None = None) -> dict:
+    kwargs = {}
+    if min_size is not None:
+        kwargs["min_size"] = min_size
+    if max_size is not None:
+        kwargs["max_size"] = max_size
+    return kwargs
+
+
+def build_fasterrcnn(num_classes: int = 2, min_size: int | None = None, max_size: int | None = None):
+    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT", **resize_kwargs(min_size, max_size))
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
     return model
@@ -141,8 +150,8 @@ def build_pretrained_fcos_coco():
     return torchvision.models.detection.fcos_resnet50_fpn(weights="DEFAULT")
 
 
-def build_retinanet(num_classes: int = 2):
-    model = torchvision.models.detection.retinanet_resnet50_fpn(weights="DEFAULT")
+def build_retinanet(num_classes: int = 2, min_size: int | None = None, max_size: int | None = None):
+    model = torchvision.models.detection.retinanet_resnet50_fpn(weights="DEFAULT", **resize_kwargs(min_size, max_size))
     old_head = model.head.classification_head
     model.head.classification_head = RetinaNetClassificationHead(
         old_head.cls_logits.in_channels,
@@ -152,8 +161,8 @@ def build_retinanet(num_classes: int = 2):
     return model
 
 
-def build_fcos(num_classes: int = 2):
-    model = torchvision.models.detection.fcos_resnet50_fpn(weights="DEFAULT")
+def build_fcos(num_classes: int = 2, min_size: int | None = None, max_size: int | None = None):
+    model = torchvision.models.detection.fcos_resnet50_fpn(weights="DEFAULT", **resize_kwargs(min_size, max_size))
     old_head = model.head.classification_head
     model.head.classification_head = FCOSClassificationHead(
         old_head.cls_logits.in_channels,

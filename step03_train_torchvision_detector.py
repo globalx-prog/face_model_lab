@@ -1,6 +1,6 @@
 # Trainiert Torchvision-Detektoren auf WIDER FACE.
 # Wichtige Parameter: --kind fasterrcnn|retinanet|fcos, --epochs, --batch,
-# --reduction, --lr, --workers, --save-every.
+# --reduction, --lr, --workers, --save-every, --amp, --min-size, --max-size.
 # Speichert als <modelltyp>_bs<batch>_red<reduction>_ep<epochs>.pth.
 # Beispiel:
 #   python face_model_lab/step03_train_torchvision_detector.py --kind retinanet --epochs 10 --batch 2 --reduction 1 --save-every 1
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import time
 
 import torch
 from torch.utils.data import DataLoader
@@ -19,13 +20,13 @@ from step06_evaluate_models import build_fcos, build_fasterrcnn, build_retinanet
 from step04_train_fasterrcnn import CocoFaceDataset, collate_fn, convert_wider_to_coco
 
 
-def build_model(kind: str):
+def build_model(kind: str, min_size: int | None = None, max_size: int | None = None):
     if kind == "fasterrcnn":
-        return build_fasterrcnn()
+        return build_fasterrcnn(min_size=min_size, max_size=max_size)
     if kind == "retinanet":
-        return build_retinanet()
+        return build_retinanet(min_size=min_size, max_size=max_size)
     if kind == "fcos":
-        return build_fcos()
+        return build_fcos(min_size=min_size, max_size=max_size)
     raise ValueError("--kind must be fasterrcnn, retinanet, or fcos")
 
 
@@ -46,10 +47,17 @@ def main() -> None:
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--save-every", type=int, default=1, help="Save an epoch checkpoint every N epochs. Use 0 to disable.")
+    parser.add_argument("--amp", action="store_true", help="Use mixed precision on CUDA/ROCm to reduce memory and often improve throughput.")
+    parser.add_argument("--min-size", type=int, default=None, help="Torchvision detector resize min_size. Default keeps torchvision's model default.")
+    parser.add_argument("--max-size", type=int, default=None, help="Torchvision detector resize max_size. Default keeps torchvision's model default.")
+    parser.add_argument("--prefetch-factor", type=int, default=2, help="DataLoader prefetch factor when workers > 0.")
     args = parser.parse_args()
 
     ensure_dirs()
     device = rocm_device(require_gpu=False)
+    if device.type == "cuda":
+        torch.backends.cudnn.benchmark = True
+        torch.set_float32_matmul_precision("high")
     train_images, train_gt = wider_paths("train")
     ann_file = ANNOTATIONS_DIR / "instances_train.json"
     if not ann_file.exists():
@@ -58,34 +66,62 @@ def main() -> None:
     dataset = CocoFaceDataset(train_images, ann_file)
     if args.reduction > 1:
         dataset = torch.utils.data.Subset(dataset, list(range(0, len(dataset), args.reduction)))
-    loader = DataLoader(dataset, batch_size=args.batch, shuffle=True, num_workers=args.workers, collate_fn=collate_fn)
+    loader_kwargs = {
+        "batch_size": args.batch,
+        "shuffle": True,
+        "num_workers": args.workers,
+        "collate_fn": collate_fn,
+        "pin_memory": device.type == "cuda",
+        "persistent_workers": args.workers > 0,
+    }
+    if args.workers > 0:
+        loader_kwargs["prefetch_factor"] = args.prefetch_factor
+    loader = DataLoader(dataset, **loader_kwargs)
     image_count = len(dataset)
 
-    model = build_model(args.kind).to(device)
+    model = build_model(args.kind, min_size=args.min_size, max_size=args.max_size).to(device)
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=args.lr, weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(args.epochs, 1))
+    amp_enabled = args.amp and device.type == "cuda"
+    scaler = torch.amp.GradScaler("cuda", enabled=amp_enabled)
+    print(
+        "Training config:",
+        f"kind={args.kind}",
+        f"images={image_count}",
+        f"batches/epoch={len(loader)}",
+        f"batch={args.batch}",
+        f"workers={args.workers}",
+        f"amp={amp_enabled}",
+        f"min_size={args.min_size or 'default'}",
+        f"max_size={args.max_size or 'default'}",
+    )
 
     model.train()
     history = []
     history_path = RESULTS_DIR / f"training_history_{args.kind}_resnet50_fpn_rocm_bs{args.batch}_red{args.reduction}_ep{args.epochs}_{timestamp()}.csv"
     for epoch in range(args.epochs):
         total_loss = 0.0
+        epoch_t0 = time.perf_counter()
         pbar = tqdm(loader, desc=f"{args.kind} epoch {epoch + 1}/{args.epochs}")
         for images, targets in pbar:
-            images = [img.to(device) for img in images]
-            targets = [{k: v.to(device) for k, v in target.items()} for target in targets]
-            loss_dict = model(images, targets)
-            losses = sum(loss for loss in loss_dict.values())
+            images = [img.to(device, non_blocking=True) for img in images]
+            targets = [{k: v.to(device, non_blocking=True) for k, v in target.items()} for target in targets]
             optimizer.zero_grad()
-            losses.backward()
+            with torch.amp.autocast(device_type=device.type, enabled=amp_enabled):
+                loss_dict = model(images, targets)
+                losses = sum(loss for loss in loss_dict.values())
+            scaler.scale(losses).backward()
+            scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-            optimizer.step()
+            scaler.step(optimizer)
+            scaler.update()
             total_loss += losses.item()
             pbar.set_postfix({"loss": f"{losses.item():.4f}", **vram_status(device)})
         scheduler.step()
         mean_loss = total_loss / len(loader)
+        epoch_seconds = time.perf_counter() - epoch_t0
         checkpoint = ""
-        print(f"epoch={epoch + 1} mean_loss={mean_loss:.4f}")
+        print(f"epoch={epoch + 1} mean_loss={mean_loss:.4f} seconds={epoch_seconds:.1f} sec_per_batch={epoch_seconds / len(loader):.3f}")
         if args.save_every and (epoch + 1) % args.save_every == 0:
             checkpoint_path = MODEL_DIR / model_name(f"{args.kind}_resnet50_fpn_rocm", args.batch, epoch + 1, "pth", args.reduction)
             torch.save(model.state_dict(), checkpoint_path)

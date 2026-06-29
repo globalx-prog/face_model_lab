@@ -1,4 +1,4 @@
-\begin{frame}{Bestes Modell und Übergabe}
+\begin{frame}{Gewinner und Übergabe}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.48\textwidth}
 \includegraphics[width=\textwidth,height=0.26\textheight,keepaspectratio]{imglib/face_model_lab/yolo_results.png}
@@ -7,15 +7,15 @@
 \begin{column}{0.48\textwidth}
 \scriptsize
 \begin{itemize}
-    \item FCOS ist der Recall-Sieger und damit die stärkste Wahl für maximale Abdeckung.
-    \item YOLOv8m ist schneller, liefert viele Run-Artefakte und passt gut zur Video-Pipeline.
-    \item Die Modellentscheidung ist deshalb zweigeteilt: Qualität gegen operative Einfachheit.
+    \item FCOS und YOLOv8m sind die Gewinner der Vorauswahl: Qualität gegen operative Einfachheit.
+    \item Faster R-CNN wird als starker Red20-Kandidat in den großen Red6/10-Vergleich nachgezogen.
+    \item Die finale Entscheidung betrachtet Recall, Validierungsmetriken, Latenz, Modellgröße und Video-Pipeline.
 \end{itemize}
 \end{column}
 \end{columns}
 \vspace{0.2em}
 \begin{mynote}[Übergabe]
 \scriptsize
-Video-Übergang: erst ungeblurrtes Original, dann dieselbe Szene mit unterschiedlichen Modellen oder Blur-Stärken. So werden Recall, Box-Grösse und Blur-Qualität sichtbar.
+Video-Übergang: erst ungeblurrtes Original, dann dieselbe Szene mit YOLO-Blur und Qualitätsbewertung. So werden Recall, Box-Grösse und Blur-Qualität sichtbar.
 \end{mynote}
 \end{frame}

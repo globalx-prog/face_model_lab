@@ -1,0 +1,29 @@
+\begin{frame}{Faster R-CNN: Effizienz und Grenzen}
+\scriptsize
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.48\textwidth}
+\textbf{Anpassbare Hebel}
+\begin{itemize}
+    \item \texttt{--workers}: paralleles Laden und Dekodieren der Bilder.
+    \item \texttt{--batch}: mehr Bilder pro GPU-Step.
+    \item \texttt{--min-size}/\texttt{--max-size}: interne Bildskalierung begrenzen.
+    \item \texttt{--amp}: Mixed Precision auf CUDA/ROCm.
+    \item \texttt{prefetch}, \texttt{pin\_memory}, \texttt{non\_blocking}: weniger Transfer-Overhead.
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Beobachtete Grenzen}
+\begin{itemize}
+    \item Batch 4 und AMP waren auf ROCm/Torchvision langsamer bzw. blockierten.
+    \item Batch 2 war stabiler, nutzt die 48 GB VRAM aber nicht voll aus.
+    \item Variable Bildgroessen, RPN und ROI Heads erzeugen viel Overhead.
+    \item Niedrige VRAM-Belegung bedeutet nicht automatisch ungenutzte GPU.
+\end{itemize}
+\end{column}
+\end{columns}
+\vspace{0.35em}
+\begin{mynote}[Einordnung]
+\scriptsize
+Das Skript ist funktional korrekt. Die Grenze liegt vor allem in der Two-Stage-Architektur und der Torchvision/ROCm-Kombination. YOLO und FCOS sind als One-Stage-Modelle fuer diesen Projektkontext deutlich effizienter.
+\end{mynote}
+\end{frame}
