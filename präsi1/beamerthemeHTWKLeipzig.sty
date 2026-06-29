@@ -57,7 +57,7 @@
     \end{beamercolorbox}
     \vskip1em\par
     \centering
-    \vspace*{2em} % Adjust the vertical space as needed
+    \vspace*{1em} % Adjust the vertical space as needed
     \begin{beamercolorbox}[sep=8pt,center]{title}
         \usebeamerfont{title}\inserttitle\par%
         \ifx\insertsubtitle\@empty%
@@ -66,7 +66,7 @@
             {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
         \fi%     
     \end{beamercolorbox}%
-    \vskip6em\par
+    \vskip3em\par
 
     \vskip1em\par
     \begin{columns}
@@ -86,7 +86,7 @@
             \end{beamercolorbox}
         \end{column}
     \end{columns}
-    \vskip2em\par
+    \vskip1em\par
     \endgroup
 }
 
@@ -124,7 +124,7 @@
             \draw [black, very thin](0,.08) -- (.8,.08);
             \draw [black, very thin] (0,.11) -- (.8,.11);
         \end{tikzpicture}
-        \small \ \textbf{\insertshorttitle}\ | \insertsection
+        \NoHyper{\small \ \textbf{\insertshorttitle}\ | \insertsection}\endNoHyper
 
     \end{beamercolorbox}
 
@@ -209,7 +209,6 @@
         \definepagelayoutwithAR
         \begin{frame}{Gliederung}
             \tableofcontents
-            \vspace*{8em}  %%MOVE THE Gliederung up to the top
         \end{frame}
     }
 }

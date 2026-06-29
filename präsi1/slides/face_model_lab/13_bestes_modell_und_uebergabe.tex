@@ -1,21 +1,15 @@
 \begin{frame}{Gewinner und Übergabe}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.48\textwidth}
-\includegraphics[width=\textwidth,height=0.26\textheight,keepaspectratio]{imglib/face_model_lab/yolo_results.png}
-\includegraphics[width=\textwidth,height=0.18\textheight,keepaspectratio]{imglib/face_model_lab/yolo_box_pr_curve.png}
-\end{column}
-\begin{column}{0.48\textwidth}
 \scriptsize
 \begin{itemize}
-    \item FCOS ist der Recall-Sieger im finalen Vergleich.
-    \item YOLOv8m bleibt der schnellste und praktischste Kandidat fuer die Video-Pipeline.
-    \item Faster R-CNN MobileNetV3-FPN bleibt kuehl, erreicht aber nur 0,365 Recall und 620,6 ms/Bild.
+    \item FCOS: Recall.
+    \item YOLO: Pipeline.
+    \item RCNN: Two-Stage.
 \end{itemize}
-\end{column}
-\end{columns}
-\vspace{0.2em}
-\begin{mynote}[Übergabe]
-\scriptsize
-Übergabe: Für maximalen Datenschutz-Recall ist FCOS die stärkste Wahl. YOLOv8m bleibt für die Video-Anonymisierung wichtig, weil Pipeline, Tracking und Blur-Artefakte dort bereits direkt sichtbar sind. Faster R-CNN zeigt trotz MobileNetV3-Backbone die Effizienzgrenze der Two-Stage-Familie.
-\end{mynote}
+\end{frame}
+
+\begin{frame}{YOLO-Trainingsartefakte}
+\centering
+\includegraphics[width=0.86\textwidth,height=0.38\textheight,keepaspectratio]{imglib/face_model_lab/yolo_results.png}
+\vspace{0.4em}
+\includegraphics[width=0.86\textwidth,height=0.30\textheight,keepaspectratio]{imglib/face_model_lab/yolo_box_pr_curve.png}
 \end{frame}

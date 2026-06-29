@@ -1,26 +1,22 @@
-\begin{frame}{Faster R-CNN}
-\small
+\begin{frame}{R-CNN-Varianten im Projekt}
+\scriptsize
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.46\textwidth}
-\begin{enumerate}
-    \item Backbone extrahiert Merkmale.
-    \item RPN schlägt Face-Regionen vor.
-    \item ROI Head prüft Kandidaten.
-    \item Boxen werden verfeinert.
-\end{enumerate}
+\begin{column}{0.49\textwidth}
+\textbf{Entwicklung der R-CNN-Idee}
+\begin{itemize}\setlength\itemsep{0.10em}
+    \item \textbf{R-CNN}: Regionen einzeln.
+    \item \textbf{Fast R-CNN}: Feature Map.
+    \item \textbf{Faster R-CNN}: RPN-Vorschläge.
+\end{itemize}
 \end{column}
-\begin{column}{0.50\textwidth}
-\begin{itemize}
-    \item Two-Stage-Referenzmodell.
-    \item Gut für robuste Lokalisierung.
-    \item Mehr Rechenaufwand pro Bild.
-    \item Im Projekt solide, aber nicht Favorit.
+\begin{column}{0.49\textwidth}
+\textbf{Projektvarianten}
+\begin{itemize}\setlength\itemsep{0.10em}
+    \item \textbf{ResNet50-FPN}: Final.
+    \item \textbf{MobileNetV3-FPN}: Guard.
+    \item Torchvision: Head ersetzt.
+    \item Two-Stage: langsamer.
 \end{itemize}
 \end{column}
 \end{columns}
-\vspace{0.5em}
-\begin{mynote}[Kernidee]
-\small
-Erst mögliche Gesichter suchen, danach genauer klassifizieren.
-\end{mynote}
 \end{frame}

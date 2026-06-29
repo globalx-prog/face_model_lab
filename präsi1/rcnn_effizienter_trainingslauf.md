@@ -1,4 +1,4 @@
-# Effizienter und kuehler RCNN-Trainingslauf
+git add enter und kuehler RCNN-Trainingslauf
 
 Ziel: Faster R-CNN testen, ohne die GPU thermisch zu stark zu belasten. Fuer den finalen Versuch wurde ein hartes Limit von 105 Grad und eine maximale Laufzeit von 8 Stunden gesetzt.
 

@@ -1,6 +1,6 @@
-\begin{frame}{Evaluation und Metriken}
+\begin{frame}{Evaluation: Setup und Metriken}
 \small
-\begin{tabularx}{\textwidth}{X r r}
+\begin{tabular}{l r r}
 \toprule
 Einstellung & Red20 & Red6/10 \\
 \midrule
@@ -9,20 +9,15 @@ GT-Faces & 3.443 & 5.015 \\
 IoU-Schwelle & 0,4 & 0,4 \\
 Confidence & 0,25 & 0,25 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \vspace{0.4em}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.44\textwidth}
 \scriptsize
 \begin{itemize}
-    \item Recall macht Datenschutzrisiko messbar.
-    \item Treffer zeigen die absolute Größenordnung.
-    \item Precision und F1 helfen bei der Threshold-Wahl.
-    \item ms/Bild entscheidet über Videotauglichkeit.
+    \item Nach Checkpoint.
+    \item Recall: Datenschutz.
+    \item Treffer: Menge.
+    \item Precision: Threshold.
+    \item ms/Bild: Video.
+    \item Gleiche IoU/Confidence.
 \end{itemize}
-\end{column}
-\begin{column}{0.54\textwidth}
-\includegraphics[width=\textwidth,height=0.43\textheight,keepaspectratio]{imglib/face_model_lab/red20_training_vs_eval.png}
-\end{column}
-\end{columns}
 \end{frame}

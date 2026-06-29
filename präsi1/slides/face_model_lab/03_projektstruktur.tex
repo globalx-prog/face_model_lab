@@ -1,18 +1,26 @@
-\begin{frame}[fragile]{Projektstruktur}
-\small
-\begin{tabularx}{\textwidth}{>{\ttfamily}l X}
-\toprule
-datasets/wider\_face/ & Rohdaten und Splits des WIDER-FACE-Datensatzes aus Kaggle. \cite{KaggleWIDERFACE} \\
-annotations/ & COCO-Annotationen für Torchvision-Training und Evaluation. \\
-trained\_models/ & Trainierte Gewichte und YOLO-Run-Artefakte. \\
-model\_results/ & CSV/JSON-Ergebnisse, Plots und Trainingshistorien. \\
-Videos/lab\_outputs/ & Geblurrte Videos, Previews und selektive Testläufe. \\
-\bottomrule
-\end{tabularx}
-\vspace{0.1em}
-\begin{itemize}
-    \item Die Trennung macht Training, Evaluation und Videoausgabe reproduzierbar.
-    \vspace{-0.5em}
-    \item Notebooks dokumentieren die Schritte; Skripte kapseln die ausführbaren Läufe.
-\end{itemize}
+\begin{frame}{Projektpipeline}
+\centering
+\scriptsize
+\begin{tikzpicture}[
+    proc/.style={draw=mainColor, fill=mainColor!12, rounded corners=2pt, minimum width=1.70cm, minimum height=0.74cm, align=center},
+    arr/.style={->, thick, draw=basalt}
+]
+\node[proc] (data) at (0,0) {WIDER\\FACE};
+\node[proc] (ann) at (2.10,0) {COCO\\YOLO};
+\node[proc] (train) at (4.20,0) {Training};
+\node[proc] (eval) at (6.30,0) {Evaluation};
+\node[proc] (video) at (8.40,0) {Video\\Blur};
+\draw[arr] (data) -- (ann);
+\draw[arr] (ann) -- (train);
+\draw[arr] (train) -- (eval);
+\draw[arr] (eval) -- (video);
+\node[align=center] at (0,-1.0) {\tiny Rohbilder};
+\node[align=center] at (2.10,-1.0) {\tiny Labels};
+\node[align=center] at (4.20,-1.0) {\tiny Gewichte};
+\node[align=center] at (6.30,-1.0) {\tiny Metriken};
+\node[align=center] at (8.40,-1.0) {\tiny Export};
+\end{tikzpicture}
+
+\vspace{0.5em}
+{\tiny Quelle Datensatz: WIDER FACE via Kaggle \cite{KaggleWIDERFACE}}
 \end{frame}

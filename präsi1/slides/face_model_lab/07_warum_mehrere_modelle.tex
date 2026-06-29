@@ -1,18 +1,13 @@
-\begin{frame}{Warum mehrere Modelle?}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.18\textwidth} >{\raggedright\arraybackslash}p{0.27\textwidth} X}
+\begin{frame}{Modelltypen im Vergleich}
+\scriptsize
+\begin{tabular}{l l l l l}
 \toprule
-Modell & Familie & Erwartung \\
+Modell & Familie & Anchor & Prinzip & Stärke \\
 \midrule
-Faster R-CNN \cite{Ren2015FasterRCNN} & Two-Stage & robuste Lokalisierung, aber mehr Rechenaufwand \\
-RetinaNet \cite{Lin2017FocalLoss} & One-Stage mit Focal Loss & schnelle Baseline, gut bei vielen Hintergrundbereichen \\
-FCOS \cite{Tian2019FCOS} & Anchor-free One-Stage & starker Recall ohne Anchor-Tuning \\
-YOLOv8m \cite{Yaseen2024YOLOv8} & praxisoptimierter One-Stage & schnelle Inferenz und einfache Videoanbindung \\
+Faster R-CNN \cite{Ren2015FasterRCNN} & Two-Stage & basiert & Vorschläge & Boxen \\
+RetinaNet \cite{Lin2017FocalLoss} & One-Stage & basiert & direkt & Focal \\
+FCOS \cite{Tian2019FCOS} & One-Stage & frei & direkt & Recall \\
+YOLOv8m \cite{Yaseen2024YOLOv8} & One-Stage & implizit & direkt & Video \\
 \bottomrule
-\end{tabularx}
-\vspace{0.8em}
-\begin{itemize}
-    \item Face Detection wird als Object-Detection-Problem formuliert.
-    \item Der Vergleich trennt Qualitätsfavorit und Praxisfavorit.
-\end{itemize}
+\end{tabular}
 \end{frame}

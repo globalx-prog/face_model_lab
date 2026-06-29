@@ -2,20 +2,15 @@
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.52\textwidth}
 \begin{enumerate}
-    \item Video laden und Frames verarbeiten.
-    \item Optional deinterlacen.
-    \item Gesichter pro Frame detektieren.
-    \item Blur-Maske auf erkannte Gesichtsregionen anwenden.
-    \item Ergebnis in \texttt{Videos/lab\_outputs/} schreiben.
+    \item Video laden.
+    \item Deinterlacen.
+    \item Faces detektieren.
+    \item Oval blurren.
+    \item Export schreiben.
 \end{enumerate}
 \end{column}
 \begin{column}{0.44\textwidth}
-\begin{mynote}[Praxis]
-\scriptsize
-Die technische Modellqualität wird erst in der Videoausgabe wirklich sichtbar: verpasste Boxen bleiben sichtbare Gesichter.
-\end{mynote}
+\includegraphics[width=\textwidth,height=0.30\textheight,keepaspectratio]{imglib/face_model_lab/yolo_val_labels.jpg}
 \end{column}
 \end{columns}
-\vspace{0.1em}
-\includegraphics[width=\textwidth,height=0.18\textheight,keepaspectratio]{imglib/face_model_lab/yolo_val_labels.jpg}
 \end{frame}

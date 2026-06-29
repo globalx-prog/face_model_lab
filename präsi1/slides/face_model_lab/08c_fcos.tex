@@ -3,20 +3,18 @@
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.48\textwidth}
 \begin{itemize}
-    \item One-Stage, aber anchor-free.
-    \item Keine vordefinierten Box-Anker.
-    \item Positionen sagen Box-Ränder voraus.
-    \item Weniger Anchor-Tuning nötig.
+    \item One-Stage.
+    \item Anchor-free.
+    \item Boxränder direkt.
+    \item Weniger Tuning.
 \end{itemize}
 \end{column}
 \begin{column}{0.48\textwidth}
-\begin{mynote}[Projektbefund]
-\small
-FCOS findet die meisten Ground-Truth-Gesichter und ist damit der Recall-Sieger.
-\end{mynote}
-\vspace{0.4em}
-\scriptsize
-\textbf{Trade-off:} hoher Recall, aber langsamere Inferenz als YOLOv8m.
+\textbf{Erwartung}
+\begin{itemize}
+    \item Hoher Recall.
+    \item ResNet50-FPN.
+\end{itemize}
 \end{column}
 \end{columns}
 \end{frame}

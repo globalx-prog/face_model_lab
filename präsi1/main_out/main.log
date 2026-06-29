@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.6.29)  29 JUN 2026 11:34
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.6.29)  29 JUN 2026 14:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1505,9 +1505,6 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: imglib/FIM_SCREEN.png Graphic file (type bmp)
 <imglib/FIM_SCREEN.png>
 
-Overfull \vbox (12.20294pt too high) detected at line 14
- []
-
 [1
 
 ] (main_out/main.toc)
@@ -1522,54 +1519,24 @@ File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 
 ]
 (./slides/face_model_lab/01_titel_und_problem.tex
-Underfull \hbox (badness 10000) in paragraph at lines 17--17
-[]\TU/texgyreheros(0)/m/n/10.95 Welches Modell
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 17--17
-\TU/texgyreheros(0)/m/n/10.95 findet möglichst
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 17--17
-\TU/texgyreheros(0)/m/n/10.95 viele Gesichter
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 17--17
-\TU/texgyreheros(0)/m/n/10.95 genug für eine
- []
-
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[4
+ [4
 
-]) (./slides/face_model_lab/02_projektziel.tex
+])
+(./slides/face_model_lab/02_projektziel.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [5
 
 ])
 (./slides/face_model_lab/03_projektstruktur.tex
-\openout4 = `main.vrb'.
-
- (main_out/main.vrb
-Underfull \hbox (badness 10000) in paragraph at lines 11--11
-[]|\TU/texgyreheros(0)/m/n/10 COCO-Annotationen für Torchvision-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 11--11
-[]|\TU/texgyreheros(0)/m/n/10 Trainierte Gewichte und YOLO-Run-
- []
-
-)
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [6
 
-]) (./slides/face_model_lab/04_datensatz_wider_face.tex
+])
+(./slides/face_model_lab/04_datensatz_wider_face.tex
 File: imglib/face_model_lab/wider_face_beispiel.png Graphic file (type bmp)
 <imglib/face_model_lab/wider_face_beispiel.png>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
@@ -1578,35 +1545,12 @@ File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 
 ])
 (./slides/face_model_lab/05_detection_grundlagen.tex
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/texgyreheros(0)/m/n/10 Vorhersagebox und
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/texgyreheros(0)/m/n/10 Modell-Sicherheit für
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/texgyreheros(0)/m/n/10 gefundene Gesichter /
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/texgyreheros(0)/m/n/10 korrekte Boxen / alle
- []
-
-
-Underfull \hbox (badness 1442) in paragraph at lines 18--18
-[]|\TU/texgyreheros(0)/m/n/10 reduziert unnötige Blur-
- []
-
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[8
+ [8
 
-]) (./slides/face_model_lab/06_uebergang_zu_den_modellen.tex
+])
+(./slides/face_model_lab/06_uebergang_zu_den_modellen.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [9
@@ -1617,162 +1561,80 @@ File: imglib/HTWK_OHNE.png Graphic file (type bmp)
  [10
 
 ]
+(./slides/face_model_lab/08a_faster_rcnn.tex
+File: imglib/HTWK_OHNE.png Graphic file (type bmp)
+<imglib/HTWK_OHNE.png>
+ [11
+
+])
 (./slides/face_model_lab/07_warum_mehrere_modelle.tex
-Underfull \hbox (badness 6608) in paragraph at lines 18--18
-[]|\TU/texgyreheros(0)/m/n/10 robuste Lokalisierung, aber
- []
-
-
-Underfull \hbox (badness 1308) in paragraph at lines 18--18
-[]|\TU/texgyreheros(0)/m/n/10 starker Recall ohne Anchor-
- []
-
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[11
+ [12
 
-]) (./slides/face_model_lab/08_wie_funktionieren_die_modelle.tex
-Underfull \hbox (badness 7963) in paragraph at lines 15--15
-[]|\TU/texgyreheros(0)/m/n/10 direkte Vorhersage ohne
- []
-
-File: imglib/face_model_lab/yolo_val_predictions.jpg Graphic file (type bmp)
-<imglib/face_model_lab/yolo_val_predictions.jpg>
+])
+(./slides/face_model_lab/09_training_und_ressourcen.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[12
+ [13
 
-]) (./slides/face_model_lab/08a_faster_rcnn.tex
-Underfull \hbox (badness 2689) in paragraph at lines 26--26
-[]\TU/texgyreheros(0)/m/n/10 Erst mögliche Gesichter suchen, danach genauer kla
-ssi-
- []
-
+]
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[13
+ [14
 
-]) (./slides/face_model_lab/08b_retinanet.tex
-Underfull \hbox (badness 10000) in paragraph at lines 22--22
-[]\TU/texgyreheros(0)/m/n/10 Viele Bildbereiche sind
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 22--22
-\TU/texgyreheros(0)/m/n/10 reduziert einfache Neg-
- []
-
-
-Underfull \hbox (badness 6775) in paragraph at lines 22--22
-\TU/texgyreheros(0)/m/n/10 ativbeispiele und betont
- []
-
+]
+File: imglib/face_model_lab/final_20260629_loss_development.png Graphic file (t
+ype bmp)
+<imglib/face_model_lab/final_20260629_loss_development.png>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[14
+ [15
 
-]) (./slides/face_model_lab/08c_fcos.tex
-Underfull \hbox (badness 10000) in paragraph at lines 22--22
-\TU/texgyreheros(0)/m/n/10 Ground-Truth-Gesichter
- []
-
+])
+(./slides/face_model_lab/07_optimizer_scheduler.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[15
+ [16
 
-]) (./slides/face_model_lab/08d_yolov8m.tex
-Underfull \hbox (badness 2469) in paragraph at lines 22--22
-\TU/texgyreheros(0)/m/n/10 Sieger, aber am besten
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 22--22
-\TU/texgyreheros(0)/m/n/10 Blur-Pipeline angebun-
- []
-
+])
+(./slides/face_model_lab/09a_faster_rcnn_effizienz.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[16
+ [17
 
-]) (./slides/face_model_lab/09_training_und_ressourcen.tex
-Underfull \hbox (badness 10000) in paragraph at lines 27--27
-[]|\TU/texgyreheros(0)/m/n/8 Precision 0,839; Recall
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 27--27
-\TU/texgyreheros(0)/m/n/8 0,579; mAP50 0,660 im
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 27--27
-[]|\TU/texgyreheros(0)/m/n/8 105°C-/8h-Guard, max.
- []
-
-File: imglib/face_model_lab/lernkurven_loss_accuracy.png Graphic file (type bmp
-)
-<imglib/face_model_lab/lernkurven_loss_accuracy.png>
-File: imglib/HTWK_OHNE.png Graphic file (type bmp)
-<imglib/HTWK_OHNE.png>
-[17
-
-]) (./slides/face_model_lab/09a_faster_rcnn_effizienz.tex
+])
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [18
 
-])
+]
 (./slides/face_model_lab/10_evaluation_und_metriken.tex
-File: imglib/face_model_lab/red20_training_vs_eval.png Graphic file (type bmp)
-<imglib/face_model_lab/red20_training_vs_eval.png>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [19
 
 ])
 (./slides/face_model_lab/11_vergleich_aller_modelle.tex
-File: imglib/face_model_lab/red20_training_vs_eval.png Graphic file (type bmp)
-<imglib/face_model_lab/red20_training_vs_eval.png>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [20
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 41--41
-[]|\TU/texgyreheros(0)/m/n/6 schnellster
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 41--41
-\TU/texgyreheros(0)/m/n/6 Pipeline-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 41--41
-[]|\TU/texgyreheros(0)/m/n/6 kuehler, aber
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 41--41
-\TU/texgyreheros(0)/m/n/6 schwach und
- []
-
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-[21
+ [21
 
-]) (./slides/face_model_lab/12_vergleichsgrafiken_und_thresholds.tex
-File: imglib/face_model_lab/evaluationsdashboard.png Graphic file (type bmp)
-<imglib/face_model_lab/evaluationsdashboard.png>
-File: imglib/HTWK_OHNE.png Graphic file (type bmp)
-<imglib/HTWK_OHNE.png>
-
-[22
-
-]
+])
+(./slides/face_model_lab/12_vergleichsgrafiken_und_thresholds.tex
 File: imglib/face_model_lab/final_20260629_validation_recall.png Graphic file (
 type bmp)
 <imglib/face_model_lab/final_20260629_validation_recall.png>
+File: imglib/HTWK_OHNE.png Graphic file (type bmp)
+<imglib/HTWK_OHNE.png>
+ [22
+
+]
 File: imglib/face_model_lab/final_20260629_threshold_sweep.png Graphic file (ty
 pe bmp)
 <imglib/face_model_lab/final_20260629_threshold_sweep.png>
@@ -1786,70 +1648,68 @@ File: imglib/face_model_lab/final_20260629_validation_latency.png Graphic file
 <imglib/face_model_lab/final_20260629_validation_latency.png>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
- [24
+
+[24
 
 ]) (./slides/face_model_lab/13_bestes_modell_und_uebergabe.tex
+File: imglib/HTWK_OHNE.png Graphic file (type bmp)
+<imglib/HTWK_OHNE.png>
+ [25
+
+]
 File: imglib/face_model_lab/yolo_results.png Graphic file (type bmp)
 <imglib/face_model_lab/yolo_results.png>
 File: imglib/face_model_lab/yolo_box_pr_curve.png Graphic file (type bmp)
 <imglib/face_model_lab/yolo_box_pr_curve.png>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
-
-[25
+ [26
 
 ])
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
- [26
 
-] (./slides/face_model_lab/14_video_pipeline.tex
-Underfull \hbox (badness 2617) in paragraph at lines 21--21
-\TU/texgyreheros(0)/m/n/8 wird erst in der Videoaus-
- []
-
-File: imglib/face_model_lab/yolo_val_labels.jpg Graphic file (type bmp)
-<imglib/face_model_lab/yolo_val_labels.jpg>
-File: imglib/HTWK_OHNE.png Graphic file (type bmp)
-<imglib/HTWK_OHNE.png>
 [27
 
-]) (./slides/face_model_lab/15_selektives_blurring.tex
+] (./slides/face_model_lab/14_video_pipeline.tex
+File: imglib/face_model_lab/yolo_val_labels.jpg Graphic file (type bmp)
+<imglib/face_model_lab/yolo_val_labels.jpg>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [28
 
 ])
-(./slides/face_model_lab/16_ergebnisvideo_und_blur_qualitaet.tex
+(./slides/face_model_lab/15_selektives_blurring.tex
+File: imglib/face_model_lab/preview_track_ids.png Graphic file (type bmp)
+<imglib/face_model_lab/preview_track_ids.png>
+File: imglib/face_model_lab/selected_blur.png Graphic file (type bmp)
+<imglib/face_model_lab/selected_blur.png>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [29
 
 ])
-(./slides/face_model_lab/17_fazit.tex
-File: imglib/face_model_lab/final_mean_loss_comparison.png Graphic file (type b
-mp)
-<imglib/face_model_lab/final_mean_loss_comparison.png>
-File: imglib/face_model_lab/final_validation_metrics.png Graphic file (type bmp
-)
-<imglib/face_model_lab/final_validation_metrics.png>
+(./slides/face_model_lab/16_ergebnisvideo_und_blur_qualitaet.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [30
 
-]
-File: imglib/face_model_lab/final_20260629_validation_latency.png Graphic file 
-(type bmp)
-<imglib/face_model_lab/final_20260629_validation_latency.png>
+])
+(./slides/face_model_lab/18_demo_idee.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [31
 
-]))
-(./slides//citations/citations.tex
+])
+(./slides/face_model_lab/17_fazit.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [32
+
+])) (./slides//citations/citations.tex
+File: imglib/HTWK_OHNE.png Graphic file (type bmp)
+<imglib/HTWK_OHNE.png>
+[33
 
 ])
 \tf@nav=\write7
@@ -1867,18 +1727,18 @@ LaTeX2e <2026-06-01>
 L3 programming layer <2026-06-18>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: CC9BB6AD2228D23F232609CDB1118408;539.
+(rerunfilecheck)             Checksum: 72D25BC459B38116A07A8F0F53EECDC8;622.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 36779 strings out of 469748
- 801079 string characters out of 5463931
- 1640090 words of memory out of 5000000
- 65032 multiletter control sequences out of 15000+600000
- 634748 words of font info for 107 fonts, out of 8000000 for 9000
+ 36750 strings out of 469748
+ 799028 string characters out of 5463931
+ 1640281 words of memory out of 5000000
+ 65019 multiletter control sequences out of 15000+600000
+ 634724 words of font info for 104 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  105i,15n,129p,1181b,5042s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main_out/main.xdv (32 pages, 405632 bytes).
+Output written on main_out/main.xdv (33 pages, 307240 bytes).

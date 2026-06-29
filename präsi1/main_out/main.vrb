@@ -1,17 +1,11 @@
 \frametitle{Projektstruktur}
 \small
-\begin{tabularx}{\textwidth}{>{\ttfamily}l X}
+\begin{tabular}{>{\ttfamily}l l}
 \toprule
-datasets/wider\_face/ & Rohdaten und Splits des WIDER-FACE-Datensatzes aus Kaggle. \cite{KaggleWIDERFACE} \\
-annotations/ & COCO-Annotationen für Torchvision-Training und Evaluation. \\
-trained\_models/ & Trainierte Gewichte und YOLO-Run-Artefakte. \\
-model\_results/ & CSV/JSON-Ergebnisse, Plots und Trainingshistorien. \\
-Videos/lab\_outputs/ & Geblurrte Videos, Previews und selektive Testläufe. \\
+datasets/wider\_face/ & Rohbilder \cite{KaggleWIDERFACE} \\
+annotations/ & COCO-Labels \\
+trained\_models/ & Gewichte \\
+model\_results/ & Metriken \\
+Videos/lab\_outputs/ & Blur-Videos \\
 \bottomrule
-\end{tabularx}
-\vspace{0.1em}
-\begin{itemize}
-    \item Die Trennung macht Training, Evaluation und Videoausgabe reproduzierbar.
-    \vspace{-0.5em}
-    \item Notebooks dokumentieren die Schritte; Skripte kapseln die ausführbaren Läufe.
-\end{itemize}
+\end{tabular}

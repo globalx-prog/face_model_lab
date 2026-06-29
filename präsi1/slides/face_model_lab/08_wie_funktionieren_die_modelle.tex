@@ -1,15 +1,13 @@
 \begin{frame}{Wie funktionieren die Modelle?}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.24\textwidth} X >{\raggedright\arraybackslash}p{0.25\textwidth}}
+\scriptsize
+\begin{tabular}{l l l}
 \toprule
 Modell & Prinzip & Stärke \\
 \midrule
-Faster R-CNN \cite{Ren2015FasterRCNN} & erst Vorschläge, dann Prüfung & robuste Boxen \\
-RetinaNet \cite{Lin2017FocalLoss} & direkte Vorhersage mit Focal Loss & schwierige Beispiele \\
-FCOS \cite{Tian2019FCOS} & direkte Vorhersage ohne Anchor & hoher Recall \\
-YOLOv8m \cite{Yaseen2024YOLOv8} & direkte, optimierte Vorhersage & Video-Pipeline \\
+Faster R-CNN \cite{Ren2015FasterRCNN} & Vorschläge prüfen & Boxen \\
+RetinaNet \cite{Lin2017FocalLoss} & Anchors direkt & Focal \\
+FCOS \cite{Tian2019FCOS} & anchor-free & Recall \\
+YOLOv8m \cite{Yaseen2024YOLOv8} & direkt optimiert & Video \\
 \bottomrule
-\end{tabularx}
-\vspace{0.7em}
-\includegraphics[width=\textwidth,height=0.28\textheight,keepaspectratio]{imglib/face_model_lab/yolo_val_predictions.jpg}
+\end{tabular}
 \end{frame}

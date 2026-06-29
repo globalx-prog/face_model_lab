@@ -1,12 +1,17 @@
 \begin{frame}{Selektives Blurring}
-\begin{itemize}
-    \item Neben ``alle Gesichter blurren'' gibt es einen Lauf für konkrete Zielgesichter.
-    \item Ein Preview-Lauf zeigt Boxen, Ränge und Track-IDs.
-    \item Danach können \texttt{--target-track-ids}, \texttt{--target-ranks} oder \texttt{--target-regions} gesetzt werden.
-    \item So lassen sich einzelne Personen gezielt anonymisieren, ohne jedes Gesicht im Bild zu verdecken.
-\end{itemize}
-\vspace{0.5em}
-\begin{mynote}[Kontrolle]
-Selektives Blurring ist praktisch, braucht aber eine visuelle Prüfung der Track-Stabilität.
-\end{mynote}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.50\textwidth}
+\centering
+{\scriptsize Preview mit IDs}
+\includegraphics[width=\textwidth,height=0.46\textheight,keepaspectratio]{imglib/face_model_lab/preview_track_ids.png}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+{\scriptsize Selektiver Blur}
+\includegraphics[width=\textwidth,height=0.46\textheight,keepaspectratio]{imglib/face_model_lab/selected_blur.png}
+\end{column}
+\end{columns}
+
+\vspace{0.3em}
+{\scriptsize IDs/Ränge setzen; visuell prüfen.}
 \end{frame}

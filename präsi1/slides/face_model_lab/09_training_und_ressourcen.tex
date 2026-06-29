@@ -1,27 +1,47 @@
-\begin{frame}{Training und Ressourcen}
+\begin{frame}{Trainingsdaten und Laufgroessen}
 \scriptsize
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{l l r r r l}
+\begin{tabular}{l l r r r}
 \toprule
-Lauf & Modelle & Bilder & Epochen & Batch & GPU \\
+Lauf & Zweck & Trainingsbilder & Epochen & Batch \\
 \midrule
-Red20-Smoke & YOLOv8m, Faster R-CNN, RetinaNet, FCOS & ca. 644 & 1 & 2 & AMD Radeon PRO W7800 48GB \\
-Red6-Finallauf & YOLOv8m, FCOS & 2.147 & 10 & 2 & AMD Radeon PRO W7800 48GB \\
-RCNN-Guardlauf & Faster R-CNN MobileNetV3-FPN & 644 & 1 & 2 & AMD Radeon PRO W7800 48GB \\
+Red20-Smoke & Vorauswahl & ca. 644 & 1 & 2 \\
+Red6-Final & Hauptvergleich & 2.147 & 10 & 2 \\
+RCNN-Guard & Thermiktest & 644 & 1 & 2 \\
 \bottomrule
-\end{tabular}}
-\vspace{0.5em}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.28\textwidth} r r X}
+\end{tabular}
+\end{frame}
+
+\begin{frame}{Trainingsablauf und Ressourcen}
+\scriptsize
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.48\textwidth}
+\textbf{Ablauf pro Training}
+\begin{enumerate}\setlength\itemsep{0.10em}
+    \item Labels konvertieren.
+    \item Head ersetzen.
+    \item Loss berechnen.
+    \item Checkpoint speichern.
+\end{enumerate}
+\end{column}
+\begin{column}{0.49\textwidth}
+\textbf{Finale Trainingslaeufe}
+\begin{tabular}{@{}l r l@{}}
 \toprule
-Modell & Trainingszeit & Größe & Trainingshinweis \\
+Modell & Zeit & Hinweis \\
 \midrule
-YOLOv8m red6 ep10 & 16,1 min & 50 MB & Precision 0,839; Recall 0,579; mAP50 0,660 im YOLO-Run \\
-FCOS red6 ep10 & ca. 58 min & 123 MB & Mean Loss 1,243 $\rightarrow$ 0,735 \\
-Faster R-CNN MobileNetV3 red20 ep1 & 12,9 min & 73 MB & 105\,\textdegree C-/8h-Guard, max. 88\,\textdegree C Junction \\
+YOLO & 16,1m & 50 MB \\
+FCOS & 58m & 123 MB \\
+FRCNN & 42m & 158 MB \\
 \bottomrule
-\end{tabularx}
-\vspace{0.15em}
-\includegraphics[width=\textwidth,height=0.24\textheight,keepaspectratio]{imglib/face_model_lab/lernkurven_loss_accuracy.png}
-\vspace{0.05em}
-\tiny Rohdaten: Trainingshistorien und YOLO-Results aus \texttt{model\_results/} und \texttt{trained\_models/yolo\_runs/}.
+\end{tabular}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Loss-Entwicklung}
+\centering
+\includegraphics[width=0.96\textwidth,height=0.66\textheight,keepaspectratio]{imglib/face_model_lab/final_20260629_loss_development.png}
+
+\vspace{0.2em}
+{\tiny Roh-Loss ist je Modell anders skaliert; normalisierte Kurven zeigen den Trend.}
 \end{frame}
