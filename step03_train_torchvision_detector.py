@@ -1,6 +1,7 @@
 # Trainiert Torchvision-Detektoren auf WIDER FACE.
 # Wichtige Parameter: --kind fasterrcnn|fasterrcnn_mobile|retinanet|fcos, --epochs, --batch,
-# --reduction, --lr, --workers, --save-every, --amp, --min-size, --max-size.
+# --reduction, --lr, --workers, --save-every, --amp, --min-size, --max-size,
+# --resume-from, --start-epoch.
 # Speichert als <modelltyp>_bs<batch>_red<reduction>_ep<epochs>.pth.
 # Beispiel:
 #   python face_model_lab/step03_train_torchvision_detector.py --kind retinanet --epochs 10 --batch 2 --reduction 1 --save-every 1
@@ -53,6 +54,8 @@ def main() -> None:
     parser.add_argument("--min-size", type=int, default=None, help="Torchvision detector resize min_size. Default keeps torchvision's model default.")
     parser.add_argument("--max-size", type=int, default=None, help="Torchvision detector resize max_size. Default keeps torchvision's model default.")
     parser.add_argument("--prefetch-factor", type=int, default=2, help="DataLoader prefetch factor when workers > 0.")
+    parser.add_argument("--resume-from", type=str, default=None, help="Load model weights from this .pth checkpoint before training.")
+    parser.add_argument("--start-epoch", type=int, default=0, help="Epoch number already completed by --resume-from. New checkpoints continue from this number.")
     args = parser.parse_args()
 
     ensure_dirs()
@@ -82,6 +85,11 @@ def main() -> None:
     image_count = len(dataset)
 
     model = build_model(args.kind, min_size=args.min_size, max_size=args.max_size).to(device)
+    if args.resume_from:
+        resume_path = str(args.resume_from)
+        print(f"Loading checkpoint: {resume_path}")
+        model.load_state_dict(torch.load(resume_path, map_location=device, weights_only=True))
+        print(f"Resuming from epoch {args.start_epoch}; training {args.epochs} additional epochs.")
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=args.lr, weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(args.epochs, 1))
     amp_enabled = args.amp and device.type == "cuda"
@@ -96,16 +104,20 @@ def main() -> None:
         f"amp={amp_enabled}",
         f"min_size={args.min_size or 'default'}",
         f"max_size={args.max_size or 'default'}",
+        f"resume_from={args.resume_from or 'none'}",
+        f"start_epoch={args.start_epoch}",
     )
 
     model.train()
     history = []
     model_label = f"{args.kind}_resnet50_fpn_rocm" if args.kind != "fasterrcnn_mobile" else "fasterrcnn_mobile_fpn_rocm"
-    history_path = RESULTS_DIR / f"training_history_{model_label}_bs{args.batch}_red{args.reduction}_ep{args.epochs}_{timestamp()}.csv"
-    for epoch in range(args.epochs):
+    final_epoch = args.start_epoch + args.epochs
+    history_path = RESULTS_DIR / f"training_history_{model_label}_bs{args.batch}_red{args.reduction}_ep{final_epoch}_{timestamp()}.csv"
+    for epoch_offset in range(args.epochs):
+        global_epoch = args.start_epoch + epoch_offset + 1
         total_loss = 0.0
         epoch_t0 = time.perf_counter()
-        pbar = tqdm(loader, desc=f"{args.kind} epoch {epoch + 1}/{args.epochs}")
+        pbar = tqdm(loader, desc=f"{args.kind} epoch {global_epoch}/{final_epoch}")
         for images, targets in pbar:
             images = [img.to(device, non_blocking=True) for img in images]
             targets = [{k: v.to(device, non_blocking=True) for k, v in target.items()} for target in targets]
@@ -124,15 +136,15 @@ def main() -> None:
         mean_loss = total_loss / len(loader)
         epoch_seconds = time.perf_counter() - epoch_t0
         checkpoint = ""
-        print(f"epoch={epoch + 1} mean_loss={mean_loss:.4f} seconds={epoch_seconds:.1f} sec_per_batch={epoch_seconds / len(loader):.3f}")
-        if args.save_every and (epoch + 1) % args.save_every == 0:
-            checkpoint_path = MODEL_DIR / model_name(model_label, args.batch, epoch + 1, "pth", args.reduction)
+        print(f"epoch={global_epoch} mean_loss={mean_loss:.4f} seconds={epoch_seconds:.1f} sec_per_batch={epoch_seconds / len(loader):.3f}")
+        if args.save_every and global_epoch % args.save_every == 0:
+            checkpoint_path = MODEL_DIR / model_name(model_label, args.batch, global_epoch, "pth", args.reduction)
             torch.save(model.state_dict(), checkpoint_path)
             checkpoint = str(checkpoint_path)
             print(f"checkpoint saved {checkpoint_path}")
         history.append({
             "model": model_label,
-            "epoch": epoch + 1,
+            "epoch": global_epoch,
             "mean_loss": mean_loss,
             "lr": optimizer.param_groups[0]["lr"],
             "batch": args.batch,
@@ -143,7 +155,7 @@ def main() -> None:
         write_history(history_path, history)
         print(f"history updated {history_path}")
 
-    output = MODEL_DIR / model_name(model_label, args.batch, args.epochs, "pth", args.reduction)
+    output = MODEL_DIR / model_name(model_label, args.batch, final_epoch, "pth", args.reduction)
     torch.save(model.state_dict(), output)
     print(f"saved {output}")
 
