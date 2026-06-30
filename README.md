@@ -146,6 +146,38 @@ For a stronger Faster R-CNN run, try:
 python face_model_lab/step04_train_fasterrcnn.py --epochs 15 --batch 2 --reduction 1 --lr 0.0001 --save-every 1
 ```
 
+Continue the strong Faster R-CNN run from `red6 ep10` to `red6 ep25`:
+
+```bash
+python face_model_lab/step03_train_torchvision_detector.py \
+  --kind fasterrcnn \
+  --epochs 15 \
+  --batch 2 \
+  --reduction 6 \
+  --lr 0.00005 \
+  --workers 0 \
+  --save-every 1 \
+  --resume-from trained_models/fasterrcnn_resnet50_fpn_rocm_bs2_red6_ep10.pth \
+  --start-epoch 10 \
+  --min-size 640 \
+  --max-size 640 \
+  --require-gpu
+```
+
+After that checkpoint exists, continue the same Faster R-CNN model on the full
+training split for at least 5 more epochs:
+
+```bash
+python face_model_lab/step03b_train_fasterrcnn_full_after_red6.py
+```
+
+The launcher waits for
+`trained_models/fasterrcnn_resnet50_fpn_rocm_bs2_red6_ep25.pth` and then starts
+the full-dataset run with `reduction=1`, `batch=2`, `epochs=5`, `lr=1e-5`,
+`min-size=640`, `max-size=640`, and `--require-gpu`. It writes the run log to
+`model_results/full_fasterrcnn_red1_ep25_to_ep30.log` and the target checkpoint
+is `trained_models/fasterrcnn_resnet50_fpn_rocm_bs2_red1_ep30.pth`.
+
 
 For experiments, change one thing at a time: `lr=5e-5`, `lr=2e-4`, then compare recall and ms/image.
 

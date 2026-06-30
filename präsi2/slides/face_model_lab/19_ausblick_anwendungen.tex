@@ -1,0 +1,47 @@
+\begin{frame}{Ausblick: Modelle weiterentwickeln}
+\small
+\begin{itemize}\setlength\itemsep{0.25em}
+    \item \textbf{Mehr Domänendaten:} eigene Video-Frames, Innenräume, schlechte Beleuchtung und kleine Gesichter nachtrainieren.
+    \item \textbf{Active Learning:} nur schwierige Fehlfälle manuell labeln: verpasste Gesichter, Profile, verdeckte Gesichter.
+    \item \textbf{Temporal stabilisieren:} Detektion mit Tracking kombinieren, damit Gesichter zwischen Frames nicht flackern.
+    \item \textbf{Threshold kalibrieren:} je Anwendung anderer Punkt zwischen Datenschutz-Recall und Fehlalarmrate.
+    \item \textbf{Deployment optimieren:} Export nach ONNX/TensorRT, Quantisierung und Benchmark auf Zielhardware.
+    \item \textbf{Privacy-QA:} automatische Stichproben nach dem Blur, besonders bei kleinen und unscharfen Gesichtern.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Ausblick: mögliche Anwendungen}
+\footnotesize
+\begin{columns}[T,totalwidth=\textwidth]
+\begin{column}{0.48\textwidth}
+\textbf{Datenschutz-Pipeline}
+\begin{itemize}\setlength\itemsep{0.22em}
+    \item Video-Anonymisierung vor Veröffentlichung
+    \item Dashcam-, Bodycam- und Eventmaterial
+    \item Forschungsdatensätze mit weniger Personenbezug
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Produktive Erweiterungen}
+\begin{itemize}\setlength\itemsep{0.22em}
+    \item Vorblur für Medienproduktion
+    \item Label-Assistenz für neue Trainingsdaten
+    \item Datenschutzfilter für Kameraanalyse
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{0.5em}
+\scriptsize
+\begin{tabular}{p{0.28\textwidth} p{0.62\textwidth}}
+\toprule
+Starkes Modell & Nächster Schritt \\
+\midrule
+Red6 ep25 & guter Spezialist, weiter mit schwierigen Fehlfällen nachtrainieren \\
+Full ep30 & bessere Generalisierung, für produktive Pipeline zuerst kalibrieren \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.25em}
+{\scriptsize Kerngedanke: Hoher Recall ist für Datenschutz wichtiger als perfekte Boxen.}
+\end{frame}

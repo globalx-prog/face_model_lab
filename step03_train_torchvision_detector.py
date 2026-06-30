@@ -49,6 +49,7 @@ def main() -> None:
     parser.add_argument("--reduction", type=int, default=10)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--workers", type=int, default=2)
+    parser.add_argument("--require-gpu", action="store_true", help="Fail instead of falling back to CPU if no GPU is visible.")
     parser.add_argument("--save-every", type=int, default=1, help="Save an epoch checkpoint every N epochs. Use 0 to disable.")
     parser.add_argument("--amp", action="store_true", help="Use mixed precision on CUDA/ROCm to reduce memory and often improve throughput.")
     parser.add_argument("--min-size", type=int, default=None, help="Torchvision detector resize min_size. Default keeps torchvision's model default.")
@@ -59,7 +60,7 @@ def main() -> None:
     args = parser.parse_args()
 
     ensure_dirs()
-    device = rocm_device(require_gpu=False)
+    device = rocm_device(require_gpu=args.require_gpu)
     if device.type == "cuda":
         torch.backends.cudnn.benchmark = True
         torch.set_float32_matmul_precision("high")
