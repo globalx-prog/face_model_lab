@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.6.29)  29 JUN 2026 14:36
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.6.29)  29 JUN 2026 15:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1573,15 +1573,27 @@ File: imglib/HTWK_OHNE.png Graphic file (type bmp)
  [12
 
 ])
-(./slides/face_model_lab/09_training_und_ressourcen.tex
+(./slides/face_model_lab/07_optimizer_scheduler.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [13
 
-]
+])
+(./slides/face_model_lab/09a_faster_rcnn_effizienz.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [14
+
+])
+(./slides/face_model_lab/09_training_und_ressourcen.tex
+File: imglib/HTWK_OHNE.png Graphic file (type bmp)
+<imglib/HTWK_OHNE.png>
+ [15
+
+]
+File: imglib/HTWK_OHNE.png Graphic file (type bmp)
+<imglib/HTWK_OHNE.png>
+ [16
 
 ]
 File: imglib/face_model_lab/final_20260629_loss_development.png Graphic file (t
@@ -1589,27 +1601,15 @@ ype bmp)
 <imglib/face_model_lab/final_20260629_loss_development.png>
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
- [15
-
-])
-(./slides/face_model_lab/07_optimizer_scheduler.tex
-File: imglib/HTWK_OHNE.png Graphic file (type bmp)
-<imglib/HTWK_OHNE.png>
- [16
-
-])
-(./slides/face_model_lab/09a_faster_rcnn_effizienz.tex
-File: imglib/HTWK_OHNE.png Graphic file (type bmp)
-<imglib/HTWK_OHNE.png>
  [17
 
 ])
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
- [18
 
-]
-(./slides/face_model_lab/10_evaluation_und_metriken.tex
+[18
+
+] (./slides/face_model_lab/10_evaluation_und_metriken.tex
 File: imglib/HTWK_OHNE.png Graphic file (type bmp)
 <imglib/HTWK_OHNE.png>
  [19
